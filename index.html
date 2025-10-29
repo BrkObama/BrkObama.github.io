@@ -1,4 +1,3 @@
-<!-- v2 -->
 <!doctype html>
 <html lang="es">
 <head>
@@ -8,22 +7,19 @@
   <meta name="description" content="Hank&#39;s &amp; Company · Moda esencial con envío rápido. Compra camisetas, sudaderas y accesorios." />
   <style>
     :root{
-      --bg:#0b1220;         /* fondo oscuro elegante */
-      --panel:#0f172a;      /* panel */
-      --text:#e5e7eb;       /* texto principal */
-      --muted:#9ca3af;      /* texto tenue */
-      --brand:#60a5fa;      /* azul marca */
-      --brand-2:#22d3ee;    /* acento secundario */
-      --ok:#34d399;         /* verde */
-      --warn:#f59e0b;       /* ámbar */
-      --danger:#ef4444;     /* rojo */
-      --stroke:rgba(229,231,235,.12);
-      --card:linear-gradient(180deg,rgba(17,24,39,.85),rgba(17,24,39,.55));
+      --bg:#0a0a0a;          /* negro base */
+      --panel:#0e0e0e;       /* panel oscuro */
+      --text:#e6ffe9;        /* texto muy claro con tinte verdoso */
+      --muted:#9bb29e;       /* gris verdoso */
+      --brand:#2f7d32;       /* VERDE marca (ajústalo al tono exacto del logo) */
+      --brand-2:#1d5e20;     /* verde más oscuro para hover */
+      --stroke:rgba(230,255,233,.10);
+      --card:linear-gradient(180deg,rgba(14,14,14,.92),rgba(14,14,14,.6));
     }
     *{box-sizing:border-box}
     html,body{margin:0;height:100%;background:
-      radial-gradient(1000px 400px at 85% -10%, rgba(96,165,250,.18), transparent 60%),
-      radial-gradient(900px 500px at 10% -20%, rgba(34,211,238,.14), transparent 60%),
+      radial-gradient(900px 420px at 85% -10%, rgba(47,125,50,.18), transparent 60%),
+      radial-gradient(900px 420px at 10% -20%, rgba(29,94,32,.12), transparent 60%),
       var(--bg);
       color:var(--text);
       font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial}
@@ -31,15 +27,16 @@
     a{color:inherit;text-decoration:none}
     .container{max-width:1150px;margin:auto;padding:0 1rem}
     /* Header */
-    header{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,rgba(11,18,32,.92),rgba(11,18,32,.6));backdrop-filter:saturate(140%) blur(8px);border-bottom:1px solid var(--stroke)}
+    header{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,rgba(10,10,10,.94),rgba(10,10,10,.7));backdrop-filter:saturate(140%) blur(8px);border-bottom:1px solid var(--stroke)}
     .nav{min-height:64px;display:flex;align-items:center;justify-content:space-between}
     .brand{display:flex;align-items:center;gap:.7rem;font-weight:800;letter-spacing:.2px}
-    .brand .logo{width:28px;height:28px;border-radius:9px;background:conic-gradient(from 90deg at 50% 50%, var(--brand), var(--brand-2), #a78bfa, var(--brand));box-shadow:0 0 26px rgba(96,165,250,.35)}
+    .brand .logo{width:30px;height:30px;border-radius:9px;background:#000 url('./assets/logo-heart.jpg') center/cover no-repeat;box-shadow:0 0 26px rgba(47,125,50,.35);border:1px solid rgba(47,125,50,.5)}
     .links{display:flex;gap:1rem}
     .links a{padding:.45rem .65rem;border-radius:.6rem;color:var(--muted)}
-    .links a:hover{color:var(--text);background:rgba(96,165,250,.12)}
-    .btn{display:inline-flex;align-items:center;gap:.45rem;padding:.65rem 1rem;border-radius:.9rem;border:1px solid var(--stroke);background:linear-gradient(180deg,rgba(15,23,42,.9),rgba(15,23,42,.55));box-shadow:0 8px 24px rgba(0,0,0,.25);cursor:pointer}
-    .btn:hover{transform:translateY(-1px);border-color:rgba(96,165,250,.45);box-shadow:0 10px 28px rgba(96,165,250,.18)}
+    .links a:hover{color:var(--text);background:rgba(47,125,50,.15)}
+    .btn{display:inline-flex;align-items:center;gap:.45rem;padding:.65rem 1rem;border-radius:.9rem;border:1px solid var(--stroke);background:linear-gradient(180deg,rgba(20,20,20,.95),rgba(20,20,20,.65));box-shadow:0 8px 24px rgba(0,0,0,.35);cursor:pointer}
+    .btn:hover{transform:translateY(-1px);border-color:rgba(47,125,50,.55);box-shadow:0 10px 28px rgba(47,125,50,.22)}
+    .btn.brand{border-color:rgba(47,125,50,.6)}
 
     /* Hero */
     .hero{display:grid;gap:2rem;grid-template-columns:1.2fr .8fr;align-items:center;padding:4.8rem 0 2.2rem}
@@ -47,44 +44,49 @@
     .chip{border:1px solid var(--stroke);padding:.25rem .6rem;border-radius:.7rem}
     .hero h1{font-size:clamp(2rem,4.1vw,3.2rem);line-height:1.08;margin:.4rem 0}
     .hero p{color:var(--muted)}
-    .mock{border:1px solid var(--stroke);border-radius:1rem;background:var(--card);padding:1rem}
+    .mock{border:1px solid var(--stroke);border-radius:1rem;background:var(--card);padding:1rem;display:grid;place-items:center}
     .mock img{border-radius:.7rem}
 
     /* Filtros */
-    .filters{display:flex;gap:.6rem;flex-wrap:wrap;margin:1.2rem 0;padding:.6rem;border:1px solid var(--stroke);border-radius:.8rem;background:linear-gradient(180deg,rgba(15,23,42,.75),rgba(15,23,42,.4))}
-    .input{display:flex;align-items:center;gap:.4rem;background:#0a1326;border:1px solid var(--stroke);border-radius:.6rem;padding:.55rem .7rem}
+    .filters{display:flex;gap:.6rem;flex-wrap:wrap;margin:1.2rem 0;padding:.6rem;border:1px solid var(--stroke);border-radius:.8rem;background:linear-gradient(180deg,rgba(18,18,18,.85),rgba(18,18,18,.55))}
+    .input{display:flex;align-items:center;gap:.4rem;background:#0f0f0f;border:1px solid var(--stroke);border-radius:.6rem;padding:.55rem .7rem}
     .input input, .input select{background:transparent;border:none;outline:none;color:var(--text)}
 
     /* Grid productos */
     .catalog{padding:1rem 0 3rem}
     .grid{display:grid;gap:1rem;grid-template-columns:repeat(4,1fr)}
     .card{background:var(--card);border:1px solid var(--stroke);border-radius:1rem;overflow:hidden;display:flex;flex-direction:column}
-    .card .img-wrap{aspect-ratio:4/5;background:linear-gradient(120deg,#0c162b,#0e1a34);display:grid;place-items:center}
+    .card .img-wrap{aspect-ratio:4/5;background:linear-gradient(120deg,#0c0c0c,#111);display:grid;place-items:center}
     .price{display:flex;align-items:center;gap:.4rem}
     .old{color:var(--muted);text-decoration:line-through;font-size:.95rem}
-    .badge{font-size:.75rem;padding:.18rem .45rem;border:1px solid var(--stroke);border-radius:.5rem;color:#bef264;background:rgba(190,242,100,.08)}
+    .badge{font-size:.75rem;padding:.18rem .45rem;border:1px solid var(--stroke);border-radius:.5rem;color:#b7fbb7;background:rgba(47,125,50,.18)}
     .card .body{padding:.9rem}
     .sizes{display:flex;gap:.35rem;flex-wrap:wrap;margin:.4rem 0 .6rem}
     .size{border:1px solid var(--stroke);padding:.25rem .5rem;border-radius:.4rem;cursor:pointer}
-    .size.active{border-color:rgba(96,165,250,.7);box-shadow:0 0 0 2px rgba(96,165,250,.15) inset}
+    .size.active{border-color:rgba(47,125,50,.7);box-shadow:0 0 0 2px rgba(47,125,50,.18) inset}
     .buy{margin-top:auto;display:flex;gap:.5rem}
 
     /* Carrito lateral */
     .drawer{position:fixed;inset:0 0 0 auto;display:none}
     .drawer.open{display:block}
-    .overlay{position:absolute;inset:0;background:rgba(0,0,0,.45)}
-    .panel{position:absolute;right:0;top:0;height:100%;width:min(420px,92%);background:linear-gradient(180deg,rgba(13,20,36,.98),rgba(13,20,36,.92));border-left:1px solid var(--stroke);display:grid;grid-template-rows:auto 1fr auto}
+    .overlay{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+    .panel{position:absolute;right:0;top:0;height:100%;width:min(420px,92%);background:linear-gradient(180deg,rgba(12,12,12,.98),rgba(12,12,12,.92));border-left:1px solid var(--stroke);display:grid;grid-template-rows:auto 1fr auto}
     .panel header,.panel footer{padding:1rem;border-bottom:1px solid var(--stroke)}
     .panel footer{border-top:1px solid var(--stroke);border-bottom:none}
     .items{overflow:auto;padding:1rem;display:grid;gap:.8rem}
-    .item{display:grid;grid-template-columns:64px 1fr auto;gap:.7rem;align-items:center;border:1px solid var(--stroke);border-radius:.6rem;padding:.5rem;background:rgba(15,23,42,.45)}
+    .item{display:grid;grid-template-columns:64px 1fr auto;gap:.7rem;align-items:center;border:1px solid var(--stroke);border-radius:.6rem;padding:.5rem;background:rgba(20,20,20,.65)}
     .qty{display:flex;align-items:center;gap:.4rem}
 
     /* Footer */
     .footer{border-top:1px solid var(--stroke);padding:2rem 0;color:var(--muted);text-align:center}
 
+    /* Slogan sección */
+    .artists{padding:2.2rem 0 3rem}
+    .artists .wrap{display:grid;gap:1rem;grid-template-columns:1fr .9fr;align-items:center;border:1px solid var(--stroke);border-radius:1rem;padding:1rem;background:linear-gradient(180deg,rgba(18,18,18,.9),rgba(18,18,18,.6))}
+    .artists h3{margin:.2rem 0}
+
     /* Responsive */
-    @media (max-width: 1000px){.grid{grid-template-columns:repeat(3,1fr)}.hero{grid-template-columns:1fr}}
+    @media (max-width: 1000px){.grid{grid-template-columns:repeat(3,1fr)}.hero{grid-template-columns:1fr}.artists .wrap{grid-template-columns:1fr}}
     @media (max-width: 720px){.grid{grid-template-columns:repeat(2,1fr)}.links{display:none}.hero{padding-top:4.2rem}}
     @media (max-width: 460px){.grid{grid-template-columns:1fr}}
   </style>
@@ -102,7 +104,7 @@
         <a href="#catalogo">Catálogo</a>
         <a href="#contacto">Contacto</a>
       </nav>
-      <button class="btn" id="btn-carrito" aria-label="Abrir carrito">🛒 <span id="cart-count" aria-live="polite">0</span></button>
+      <button class="btn brand" id="btn-carrito" aria-label="Abrir carrito">🛒 <span id="cart-count" aria-live="polite">0</span></button>
     </div>
   </header>
 
@@ -115,14 +117,14 @@
         <span class="chip">🔒 Pago seguro</span>
       </div>
       <h1>Moda esencial, calidad honesta</h1>
-      <p>En Hank&#39;s &amp; Company vestimos sin complicaciones: tejidos duraderos, cortes que sientan bien y precios sin humo. Compra ahora y viste mejor.</p>
+      <p>Negro + verde Hank&#39;s. Tejidos duraderos, cortes que sientan bien y precios sin humo. Compra ahora y viste mejor.</p>
       <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem">
-        <a class="btn" href="#catalogo">Ver catálogo</a>
-        <a class="btn" href="#novedades" style="border-color:rgba(34,211,238,.35)">Novedades</a>
+        <a class="btn brand" href="#catalogo">Ver catálogo</a>
+        <a class="btn" href="#novedades">Novedades</a>
       </div>
     </section>
-    <aside class="mock" aria-label="Campaña destacada">
-      <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1200&auto=format&fit=crop" alt="Lookbook Hank&#39;s &amp; Company"/>
+    <aside class="mock" aria-label="Logo Hank&#39;s &amp; Company">
+      <img src="./assets/logo-heart.jpg" alt="Logo Hank&#39;s & Company"/>
     </aside>
   </main>
 
@@ -186,27 +188,34 @@
           <strong>Total</strong>
           <strong id="cart-total">0,00 €</strong>
         </div>
-        <button class="btn" id="btn-checkout">Continuar al pago</button>
+        <button class="btn brand" id="btn-checkout">Continuar al pago</button>
         <p id="checkout-msg" style="margin:.5rem 0 0;color:var(--muted)"></p>
       </footer>
     </div>
   </div>
+
+  <!-- Slogan artistas -->
+  <section class="container artists">
+    <div class="wrap">
+      <div>
+        <h3>Programmed by the best artists</h3>
+        <p style="color:var(--muted)">Gracias al equipo de diseño por convertir ideas en piezas que la gente quiere vestir. Negro impecable, verde Hank&#39;s y actitud.</p>
+      </div>
+      <div class="mock"><img src="./assets/artists-3d.jpg" alt="Arte 3D Hank&#39;s"/></div>
+    </div>
+  </section>
 
   <footer class="footer">
     <p>© <span id="year"></span> Hank&#39;s &amp; Company — Hecho con cariño y buen gusto.</p>
   </footer>
 
   <script>
-    // ===== Datos de demo =====
+    // ===== Datos de demo con tus fotos =====
     const PRODUCTS = [
-      {id:'ts-blanca', nombre:'Camiseta Essential Blanca', tipo:'camiseta', precio:14.90, precioAntes:19.90, popular:5, img:'https://images.unsplash.com/photo-1520975922284-87a6b233c98a?q=80&w=900&auto=format&fit=crop', tallas:['S','M','L','XL'], etiqueta:'-25%'},
-      {id:'ts-negra', nombre:'Camiseta Oversize Negra', tipo:'camiseta', precio:17.90, popular:9, img:'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=900&auto=format&fit=crop', tallas:['S','M','L','XL']},
-      {id:'hoodie-grey', nombre:'Sudadera Hoodie Gris', tipo:'sudadera', precio:34.90, popular:10, img:'https://images.unsplash.com/photo-1520975916090-3105956dac38?q=80&w=900&auto=format&fit=crop', tallas:['S','M','L']},
-      {id:'hoodie-black', nombre:'Sudadera Black Label', tipo:'sudadera', precio:39.90, popular:7, img:'https://images.unsplash.com/photo-1539533113208-f6df8cc8b543?q=80&w=900&auto=format&fit=crop', tallas:['M','L','XL'], etiqueta:'Nuevo'},
-      {id:'jeans-blue', nombre:'Jeans Slim Azul', tipo:'pantalon', precio:29.90, popular:6, img:'https://images.unsplash.com/photo-1516826957135-700dedea698c?q=80&w=900&auto=format&fit=crop', tallas:['38','40','42','44']},
-      {id:'jeans-black', nombre:'Jeans Tapered Negro', tipo:'pantalon', precio:34.90, popular:8, img:'https://images.unsplash.com/photo-1460353581641-37baddab0fa2?q=80&w=900&auto=format&fit=crop', tallas:['38','40','42','44']},
-      {id:'cap', nombre:'Gorra Logo Classic', tipo:'accesorio', precio:12.90, popular:4, img:'https://images.unsplash.com/photo-1534214526114-0ea4d57b07c1?q=80&w=900&auto=format&fit=crop', tallas:['Única']},
-      {id:'socks', nombre:'Calcetines Pack 3', tipo:'accesorio', precio:9.90, popular:3, img:'https://images.unsplash.com/photo-1604076913837-52ab5629fba9?q=80&w=900&auto=format&fit=crop', tallas:['39-42','43-46']}
+      {id:'tee-skate', nombre:'Camiseta Skate Navy', tipo:'camiseta', precio:24.90, popular:10, img:'./assets/tee-skate.jpg', tallas:['S','M','L','XL'], etiqueta:'Nuevo'},
+      {id:'tee-grid', nombre:'Camiseta Grid Logo', tipo:'camiseta', precio:22.90, popular:9, img:'./assets/tee-grid.jpg', tallas:['S','M','L','XL']},
+      {id:'tee-front', nombre:'Camiseta Logo Front', tipo:'camiseta', precio:19.90, popular:8, img:'./assets/tee-front.jpg', tallas:['S','M','L','XL']},
+      {id:'hoodie-astro', nombre:'Hoodie Astro Black', tipo:'sudadera', precio:39.90, popular:7, img:'./assets/hoodie-astro.jpg', tallas:['S','M','L','XL'], etiqueta:'Best‑seller'}
     ];
 
     const state = { query:'', tipo:'', orden:'pop', cart:[] };
@@ -232,7 +241,6 @@
     }
 
     function renderCard(p){
-      const antes = p.precioAntes ? `<span class="old">${money(p.precioAntes)}</span>` : '';
       const badge = p.etiqueta ? `<span class="badge">${p.etiqueta}</span>` : '';
       const sizes = p.tallas.map((t,i)=>`<button class="size ${i===0?'active':''}" data-size="${t}">${t}</button>`).join('');
       return `
@@ -245,11 +253,11 @@
             <h3 style="margin:.1rem 0 0;font-size:1.05rem">${p.nombre}</h3>
             ${badge}
           </div>
-          <div class="price"><strong>${money(p.precio)}</strong> ${antes}</div>
+          <div class="price"><strong>${money(p.precio)}</strong></div>
           <div class="sizes" role="group" aria-label="Selecciona talla">${sizes}</div>
           <div class="buy">
-            <button class="btn add">Añadir 🛒</button>
-            <button class="btn fav" title="Guardar para luego">♡</button>
+            <button class="btn brand add">Añadir 🛒</button>
+            <button class="btn" title="Guardar para luego">♡</button>
           </div>
         </div>
       </article>`;
@@ -337,7 +345,7 @@
     document.getElementById('btn-checkout').addEventListener('click',()=>{
       const msg = document.getElementById('checkout-msg');
       if(!state.cart.length){ msg.textContent = 'Añade algo al carrito antes de pagar 😉'; return; }
-      msg.textContent = 'Esto es una demo estática. Aquí conectaríamos Stripe / PayPal o un backend.';
+      msg.textContent = 'Demo estática. Aquí conectaríamos Stripe / PayPal o un backend.';
     });
 
     // Init
