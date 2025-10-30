@@ -33,11 +33,16 @@
     .container{max-width:1150px;margin:auto;padding:0 1rem}
 
     /* Header */
-    <button class="btn brand" id="btn-carrito" type="button"
-            onclick="openDrawer()" aria-label="Abrir carrito">
-      🛒 <span id="cart-count" aria-live="polite">0</span>
-    </button>
-
+    header{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,rgba(10,10,10,.94),rgba(10,10,10,.7));backdrop-filter:saturate(140%) blur(8px);border-bottom:1px solid var(--stroke)}
+    .nav{min-height:64px;display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:.7rem;font-weight:800;letter-spacing:.2px}
+    .brand .logo{width:30px;height:30px;border-radius:9px;background:#000 url('./assets/logo-heart.jpg') center/cover no-repeat;box-shadow:0 0 26px rgba(47,125,50,.35);border:1px solid rgba(47,125,50,.5)}
+    .links{display:flex;gap:1rem}
+    .links a{padding:.45rem .65rem;border-radius:.6rem;color:var(--muted)}
+    .links a:hover{color:var(--text);background:rgba(47,125,50,.15)}
+    .btn{display:inline-flex;align-items:center;gap:.45rem;padding:.65rem 1rem;border-radius:.9rem;border:1px solid var(--stroke);background:linear-gradient(180deg,rgba(20,20,20,.95),rgba(20,20,20,.65));box-shadow:0 8px 24px rgba(0,0,0,.35);cursor:pointer;font-weight:600}
+    .btn:hover{transform:translateY(-1px);border-color:rgba(47,125,50,.55);box-shadow:0 10px 28px rgba(47,125,50,.22)}
+    .btn.brand{border-color:rgba(47,125,50,.6)}
 
     /* Hero */
     .hero{display:grid;gap:2rem;grid-template-columns:1.2fr .8fr;align-items:center;padding:4.8rem 0 2.2rem}
@@ -281,9 +286,9 @@
   <script>
     // ===== Datos de demo con tus fotos =====
     const PRODUCTS = [
-      {id:'tee-skate', nombre:'Camiseta Skate Navy', tipo:'camiseta', precio:24.90, popular:10, img:'./assets/tee-skate.jpg', tallas:['S','M','L','XL'], etiqueta:'Nuevo'},
-      {id:'tee-grid', nombre:'Camiseta Grid Logo', tipo:'camiseta', precio:22.90, popular:9, img:'./assets/tee-grid.jpg', tallas:['S','M','L','XL']},
-      {id:'tee-front', nombre:'Camiseta Logo Front', tipo:'camiseta', precio:19.90, popular:8, img:'./assets/tee-front.jpg', tallas:['S','M','L','XL']},
+      {id:'tee-skate', nombre:'Astro black shirt', tipo:'camiseta', precio:24.90, popular:10, img:'./assets/tee-skate.jpg', tallas:['S','M','L','XL'], etiqueta:'Nuevo'},
+      {id:'tee-grid', nombre:'Blue Heart black shirt', tipo:'camiseta', precio:22.90, popular:9, img:'./assets/tee-grid.jpg', tallas:['S','M','L','XL']},
+      {id:'tee-front', nombre:'Green Heart black shirt', tipo:'camiseta', precio:19.90, popular:8, img:'./assets/tee-front.jpg', tallas:['S','M','L','XL']},
       {id:'hoodie-astro', nombre:'Hoodie Astro Black', tipo:'sudadera', precio:39.90, popular:7, img:'./assets/hoodie-astro.jpg', tallas:['S','M','L','XL'], etiqueta:'Best-seller'}
     ];
 
@@ -352,39 +357,123 @@
       });
     }
 
-    // === Carrito: listeners seguros ===
-function openDrawer(){
-  const drawer = document.getElementById('drawer');
-  if(!drawer) return;
-  drawer.classList.add('open');
-  drawer.setAttribute('aria-hidden','false');
-  showCartStep();
-}
-function closeDrawer(){
-  const drawer = document.getElementById('drawer');
-  if(!drawer) return;
-  drawer.classList.remove('open');
-  drawer.setAttribute('aria-hidden','true');
-}
+    // ===== Carrito mejorado (resumen → datos → mailto) =====
+    const drawer = document.getElementById('drawer');
+    const btnCart = document.getElementById('btn-carrito');
+    const cartStep = document.getElementById('cart-step');
+    const formStep = document.getElementById('form-step');
+    const cartFooter = document.getElementById('cart-footer');
+    const formFooter = document.getElementById('form-footer');
+    const cartTotal = document.getElementById('cart-total');
+    const cartTotalForm = document.getElementById('cart-total-form');
+    const cartCount = document.getElementById('cart-count');
 
-const btnCart      = document.getElementById('btn-carrito');
-const closeOverlay = document.getElementById('close-drawer');
-const btnContinuar = document.getElementById('btn-continuar');
-const btnVolver    = document.getElementById('btn-volver');
-const btnVaciar    = document.getElementById('btn-vaciar');
-const btnEnviar    = document.getElementById('btn-enviar');
+    const btnContinuar = document.getElementById('btn-continuar');
+    const btnVaciar = document.getElementById('btn-vaciar');
+    const btnVolver = document.getElementById('btn-volver');
+    const btnEnviar = document.getElementById('btn-enviar');
 
-if (btnCart)      btnCart.addEventListener('click', openDrawer);
-if (closeOverlay) closeOverlay.addEventListener('click', closeDrawer);
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+    function openDrawer(){ drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); showCartStep(); }
+    function closeDrawer(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); }
 
-if (btnContinuar) btnContinuar.addEventListener('click', showFormStep);
-if (btnVolver)    btnVolver.addEventListener('click', showCartStep);
-if (btnVaciar)    btnVaciar.addEventListener('click', () => { emptyCart(); });
+    btnCart.addEventListener('click',()=> openDrawer());
+    document.getElementById('close-drawer').addEventListener('click',()=> closeDrawer());
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeDrawer(); });
 
-if (btnEnviar) btnEnviar.addEventListener('click', () => {
-  // aquí dejas el contenido de mailto que ya tenías (no lo borres)
-});
+    function addToCart(item){
+      const key = item.id + '|' + item.talla;
+      const found = state.cart.find(i=>i.key===key);
+      if(found) found.qty += 1; else state.cart.push({key, id:item.id, nombre:item.nombre, talla:item.talla, precio:item.precio, img:item.img, qty:1});
+      renderCart();
+      openDrawer();
+    }
+    function removeFromCart(key){ state.cart = state.cart.filter(i=>i.key!==key); renderCart(); }
+    function changeQty(key, delta){
+      const it = state.cart.find(i=>i.key===key);
+      if(!it) return;
+      it.qty += delta; if(it.qty<=0) removeFromCart(key); else renderCart();
+    }
+    function emptyCart(){ state.cart = []; renderCart(); }
+
+    function renderCart(){
+      cartStep.innerHTML = state.cart.length ? state.cart.map(i=>`
+        <div class="item">
+          <img src="${i.img}" alt="${i.nombre}" width="64" height="64"/>
+          <div>
+            <div style="display:flex;justify-content:space-between;gap:.6rem">
+              <strong>${i.nombre}</strong>
+              <button class="btn" onclick="removeFromCart('${i.key}')" title="Quitar">✕</button>
+            </div>
+            <div style="color:var(--muted)">Talla ${i.talla}</div>
+            <div class="qty"><button class="btn" onclick="changeQty('${i.key}',-1)">−</button><span>${i.qty}</span><button class="btn" onclick="changeQty('${i.key}',1)">＋</button></div>
+          </div>
+          <div><strong>${money(i.precio*i.qty)}</strong></div>
+        </div>`).join('') : '<p style="color:var(--muted)">Tu carrito está vacío.</p>';
+      const total = state.cart.reduce((s,i)=>s+i.precio*i.qty,0);
+      cartTotal.textContent = money(total);
+      cartTotalForm.textContent = money(total);
+      cartCount.textContent = state.cart.reduce((s,i)=>s+i.qty,0);
+    }
+
+    function showFormStep(){
+      if(!state.cart.length){ alert('Añade algún artículo antes de continuar.'); return; }
+      cartStep.style.display = 'none';
+      cartFooter.style.display = 'none';
+      formStep.style.display = 'block';
+      formFooter.style.display = 'block';
+    }
+    function showCartStep(){
+      cartStep.style.display = 'block';
+      cartFooter.style.display = 'block';
+      formStep.style.display = 'none';
+      formFooter.style.display = 'none';
+    }
+
+    document.getElementById('btn-continuar').addEventListener('click', showFormStep);
+    document.getElementById('btn-volver').addEventListener('click', showCartStep);
+    document.getElementById('btn-vaciar').addEventListener('click', ()=>{ emptyCart(); });
+
+    document.getElementById('btn-enviar').addEventListener('click', ()=>{
+      const nombre   = document.getElementById('f-nombre').value.trim();
+      const email    = document.getElementById('f-email').value.trim();
+      const tel      = document.getElementById('f-telefono').value.trim();
+      const pais     = document.getElementById('f-pais').value.trim();
+      const dir      = document.getElementById('f-direccion').value.trim();
+      const ciudad   = document.getElementById('f-ciudad').value.trim();
+      const cp       = document.getElementById('f-cp').value.trim();
+      const notas    = document.getElementById('f-notas').value.trim();
+
+      if(!nombre || !email || !tel || !pais || !dir || !ciudad || !cp){
+        document.getElementById('checkout-msg').textContent = 'Completa todos los campos obligatorios.';
+        return;
+      }
+      if(!state.cart.length){
+        document.getElementById('checkout-msg').textContent = 'Tu carrito está vacío.';
+        return;
+      }
+
+      const total = state.cart.reduce((s,i)=>s+i.precio*i.qty,0);
+      const cuerpoTxt =
+`Pedido Hank's & Company
+
+Artículos:
+${state.cart.map(i=>`- ${i.nombre} (talla ${i.talla}) x${i.qty} → ${(i.precio*i.qty).toFixed(2)} €`).join('\n')}
+
+Total: ${total.toFixed(2)} €
+
+Datos del cliente:
+Nombre: ${nombre}
+Email: ${email}
+Teléfono: ${tel}
+Dirección: ${dir}, ${cp} ${ciudad}, ${pais}
+Notas: ${notas || '-'}`;
+
+      const destinatario = 'hernangm2006@gmail.com'; // cámbialo si quieres
+      const asunto = encodeURIComponent("Nuevo pedido - Hank's & Company");
+      const cuerpo = encodeURIComponent(cuerpoTxt);
+      window.location.href = `mailto:${destinatario}?subject=${asunto}&body=${cuerpo}`;
+      document.getElementById('checkout-msg').textContent = 'Abriendo tu cliente de correo para enviar el pedido…';
+    });
 
     // Filtros
     q.addEventListener('input', ()=>{ state.query = q.value.trim().toLowerCase(); render(); });
