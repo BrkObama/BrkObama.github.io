@@ -124,22 +124,6 @@
       mix-blend-mode:screen;
       pointer-events:none;
     }
-    /* --- FIX: doble barra negra bajo el header --- */
-
-/* Deja un único borde bajo la cabecera */
-header{ border-bottom:1px solid var(--stroke); }
-
-/* Quita bordes duplicados en barras internas */
-.nav, .navbar, .site-header, .topbar{ border-bottom:0 !important; }
-
-/* Evita que el primer bloque meta otro borde arriba */
-main, .hero, .container.hero{ border-top:0 !important; }
-
-/* Si quedó un separador del header, anúlalo */
-.header-spacer{ display:none !important; height:0 !important; }
-
-/* (Por si el HTML corto dejó esto) elimina el empuje manual */
-main{ margin-top:0 !important; }
 
   </style>
 </head>
@@ -598,73 +582,6 @@ Notas: ${notas || '-'}`;
       --muted: #9e9e9e;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-
-    body {
-      background-color: var(--negro);
-      color: var(--texto);
-      overflow-x: hidden;
-    }
-
-    header {
-      background: rgba(0,0,0,0.9);
-      backdrop-filter: blur(6px);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem 2rem;
-      border-bottom: 1px solid var(--gris);
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-    }
-
-    .brand { color: var(--verde-hank); font-weight: 700; font-size: 1.2rem; text-decoration: none; }
-
-    nav a {
-      color: var(--texto);
-      margin: 0 1rem;
-      text-decoration: none;
-      transition: color .2s;
-    }
-    nav a:hover { color: var(--verde-hank); }
-
-    main {
-      margin-top: 100px;
-      text-align: center;
-      padding: 2rem;
-    }
-
-    button {
-      background: transparent;
-      border: 1px solid var(--verde-hank);
-      color: var(--texto);
-      border-radius: 8px;
-      padding: .6rem 1rem;
-      cursor: pointer;
-      transition: all .2s;
-    }
-    button:hover {
-      background: var(--verde-hank);
-      color: var(--negro);
-    }
-
-    /* ===================== */
-    /* Fondo de vídeo        */
-    /* ===================== */
-    .bgfx {
-      position: fixed;
-      left: 0; right: 0; top: 64px; bottom: 0;
-      z-index: -1;
-      overflow: hidden;
-      pointer-events: none;
-    }
-    .bgfx video {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      filter: brightness(.3) saturate(1.2);
-    }
-
     /* ===================== */
     /* Drawer (carrito)      */
     /* ===================== */
@@ -735,12 +652,7 @@ Notas: ${notas || '-'}`;
       🛒 <span id="cart-count" aria-live="polite">0</span>
     </button>
   </header>
-
-  <!-- FONDO DE VÍDEO -->
-  <div class="bgfx">
-    <video src="./assets/bg.mp4" autoplay muted loop playsinline></video>
-  </div>
-
+  
   <main>
     <h1>Only for Hank's Brand</h1>
     <p>Negro + verde Hank's. Tejidos duraderos, cortes que sientan bien y precios sin humo.</p>
