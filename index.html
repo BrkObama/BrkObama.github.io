@@ -298,57 +298,225 @@
       });
     }
 
-    // Carrito
-    const drawer = document.getElementById('drawer');
-    const btnCart = document.getElementById('btn-carrito');
-    const cartItems = document.getElementById('cart-items');
-    const cartTotal = document.getElementById('cart-total');
-    const cartCount = document.getElementById('cart-count');
+  //<!-- Drawer del carrito (Resumen + Datos) -->
+<div id="drawer" class="drawer" aria-hidden="true">
+  <div class="overlay" id="close-drawer" aria-label="Cerrar carrito" role="button" tabindex="0"></div>
 
-    function openDrawer(){ drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); }
-    function closeDrawer(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); }
+  <div class="panel" role="dialog" aria-labelledby="carrito-titulo">
+    <header>
+      <h3 id="carrito-titulo" style="margin:.2rem 0">Tu carrito</h3>
+      <p style="margin:0;color:var(--muted)">Revisa tus artículos o continúa para introducir tus datos.</p>
+    </header>
 
-    btnCart.addEventListener('click',()=> openDrawer());
-    document.getElementById('close-drawer').addEventListener('click',()=> closeDrawer());
-    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeDrawer(); });
+    <!-- Paso 1: Resumen -->
+    <div id="cart-step" class="items"></div>
 
-    function addToCart(item){
-      const key = item.id + '|' + item.talla;
-      const found = state.cart.find(i=>i.key===key);
-      if(found) found.qty += 1; else state.cart.push({key, id:item.id, nombre:item.nombre, talla:item.talla, precio:item.precio, img:item.img, qty:1});
-      renderCart();
-      openDrawer();
-    }
-
-    function removeFromCart(key){
-      state.cart = state.cart.filter(i=>i.key!==key);
-      renderCart();
-    }
-
-    function changeQty(key, delta){
-      const it = state.cart.find(i=>i.key===key);
-      if(!it) return;
-      it.qty += delta; if(it.qty<=0) removeFromCart(key); else renderCart();
-    }
-
-    function renderCart(){
-      cartItems.innerHTML = state.cart.length ? state.cart.map(i=>`
-        <div class="item">
-          <img src="${i.img}" alt="${i.nombre}" width="64" height="64"/>
-          <div>
-            <div style="display:flex;justify-content:space-between;gap:.6rem">
-              <strong>${i.nombre}</strong>
-              <button class="btn" onclick="removeFromCart('${i.key}')" title="Quitar">✕</button>
-            </div>
-            <div style="color:var(--muted)">Talla ${i.talla}</div>
-            <div class="qty"><button class="btn" onclick="changeQty('${i.key}',-1)">−</button><span>${i.qty}</span><button class="btn" onclick="changeQty('${i.key}',1)">＋</button></div>
+    <!-- Paso 2: Datos del cliente -->
+    <div id="form-step" class="items" style="display:none">
+      <form id="checkout-form" novalidate>
+        <div style="display:grid;gap:.8rem">
+          <div style="display:grid;gap:.6rem;grid-template-columns:1fr 1fr">
+            <label>Nombre y apellidos
+              <input class="input" type="text" id="f-nombre" required placeholder="Nombre y apellidos" style="width:100%;padding:.6rem;border-radius:.6rem;border:1px solid var(--stroke);background:#0f0f0f;color:var(--text)">
+            </label>
+            <label>Email
+              <input class="input" type="email" id="f-email" required placeholder="tucorreo@ejemplo.com" style="width:100%;padding:.6rem;border-radius:.6rem;border:1px solid var(--stroke);background:#0f0f0f;color:var(--text)">
+            </label>
           </div>
-          <div><strong>${money(i.precio*i.qty)}</strong></div>
-        </div>`).join('') : '<p style="color:var(--muted)">Tu carrito está vacío.</p>';
-      const total = state.cart.reduce((s,i)=>s+i.precio*i.qty,0);
-      cartTotal.textContent = money(total);
-      cartCount.textContent = state.cart.reduce((s,i)=>s+i.qty,0);
-    }
+
+          <div style="display:grid;gap:.6rem;grid-template-columns:1fr 1fr">
+            <label>Teléfono
+              <input class="input" type="tel" id="f-telefono" required placeholder="+34 600 000 000" pattern="^[0-9+\\s-]{7,}$" style="width:100%;padding:.6rem;border-radius:.6rem;border:1px solid var(--stroke);background:#0f0f0f;color:var(--text)">
+            </label>
+            <label>País
+              <input class="input" type="text" id="f-pais" required value="España" style="width:100%;padding:.6rem;border-radius:.6rem;border:1px solid var(--stroke);background:#0f0f0f;color:var(--text)">
+            </label>
+          </div>
+
+          <label>Dirección
+            <input class="input" type="text" id="f-direccion" required placeholder="Calle, número, piso" style="width:100%;padding:.6rem;border-radius:.6rem;border:1px solid var(--stroke);background:#0f0f0f;color:var(--text)">
+          </label>
+
+          <div style="display:grid;gap:.6rem;grid-template-columns:2fr 1fr">
+            <label>Ciudad
+              <input class="input" type="text" id="f-ciudad" required style="width:100%;padding:.6rem;border-radius:.6rem;border:1px solid var(--stroke);background:#0f0f0f;color:var(--text)">
+            </label>
+            <label>Código postal
+              <input class="input" type="text" id="f-cp" required pattern="^[0-9]{4,6}$" style="width:100%;padding:.6rem;border-radius:.6rem;border:1px solid var(--stroke);background:#0f0f0f;color:var(--text)">
+            </label>
+          </div>
+
+          <label>Notas del pedido (opcional)
+            <textarea id="f-notas" rows="3" placeholder="Instrucciones de entrega…" style="width:100%;padding:.6rem;border-radius:.6rem;border:1px solid var(--stroke);background:#0f0f0f;color:var(--text)"></textarea>
+          </label>
+        </div>
+      </form>
+    </div>
+
+    <footer id="drawer-footer">
+      <!-- Footer dinámico (cambia según paso) -->
+      <div id="cart-footer">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem">
+          <strong>Total</strong>
+          <strong id="cart-total">0,00 €</strong>
+        </div>
+        <div style="display:flex;gap:.6rem">
+          <button class="btn" id="btn-vaciar">Vaciar</button>
+          <button class="btn brand" id="btn-continuar">Continuar</button>
+        </div>
+      </div>
+
+      <div id="form-footer" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem">
+          <strong>Total</strong>
+          <strong id="cart-total-form">0,00 €</strong>
+        </div>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+          <button class="btn" id="btn-volver">Volver</button>
+          <button class="btn brand" id="btn-enviar">Enviar pedido (demo)</button>
+        </div>
+        <p id="checkout-msg" style="margin:.5rem 0 0;color:var(--muted)"></p>
+      </div>
+    </footer>
+  </div>
+</div>
+<script>
+     
+// ===== Carrito mejorado (paso 1 Resumen → paso 2 Datos) =====
+const drawer = document.getElementById('drawer');
+const btnCart = document.getElementById('btn-carrito');
+const cartStep = document.getElementById('cart-step');
+const formStep = document.getElementById('form-step');
+const cartFooter = document.getElementById('cart-footer');
+const formFooter = document.getElementById('form-footer');
+const cartTotal = document.getElementById('cart-total');
+const cartTotalForm = document.getElementById('cart-total-form');
+const cartCount = document.getElementById('cart-count');
+
+const btnContinuar = document.getElementById('btn-continuar');
+const btnVaciar = document.getElementById('btn-vaciar');
+const btnVolver = document.getElementById('btn-volver');
+const btnEnviar = document.getElementById('btn-enviar');
+
+function openDrawer(){ drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); showCartStep(); }
+function closeDrawer(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); }
+
+// abrir/cerrar
+btnCart.addEventListener('click',()=> openDrawer());
+document.getElementById('close-drawer').addEventListener('click',()=> closeDrawer());
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeDrawer(); });
+
+// estado del carrito (usa el que ya tienes)
+function addToCart(item){
+  const key = item.id + '|' + item.talla;
+  const found = state.cart.find(i=>i.key===key);
+  if(found) found.qty += 1; else state.cart.push({key, id:item.id, nombre:item.nombre, talla:item.talla, precio:item.precio, img:item.img, qty:1});
+  renderCart();
+  openDrawer();
+}
+function removeFromCart(key){ state.cart = state.cart.filter(i=>i.key!==key); renderCart(); }
+function changeQty(key, delta){
+  const it = state.cart.find(i=>i.key===key);
+  if(!it) return;
+  it.qty += delta; if(it.qty<=0) removeFromCart(key); else renderCart();
+}
+function emptyCart(){ state.cart = []; renderCart(); }
+
+// UI de resumen
+function renderCart(){
+  // items
+  cartStep.innerHTML = state.cart.length ? state.cart.map(i=>`
+    <div class="item">
+      <img src="${i.img}" alt="${i.nombre}" width="64" height="64"/>
+      <div>
+        <div style="display:flex;justify-content:space-between;gap:.6rem">
+          <strong>${i.nombre}</strong>
+          <button class="btn" onclick="removeFromCart('${i.key}')" title="Quitar">✕</button>
+        </div>
+        <div style="color:var(--muted)">Talla ${i.talla}</div>
+        <div class="qty"><button class="btn" onclick="changeQty('${i.key}',-1)">−</button><span>${i.qty}</span><button class="btn" onclick="changeQty('${i.key}',1)">＋</button></div>
+      </div>
+      <div><strong>${money(i.precio*i.qty)}</strong></div>
+    </div>`).join('') : '<p style="color:var(--muted)">Tu carrito está vacío.</p>';
+  // totales
+  const total = state.cart.reduce((s,i)=>s+i.precio*i.qty,0);
+  cartTotal.textContent = money(total);
+  cartTotalForm.textContent = money(total);
+  // contador
+  cartCount.textContent = state.cart.reduce((s,i)=>s+i.qty,0);
+}
+
+// paso → formulario
+function showFormStep(){
+  if(!state.cart.length){ alert('Añade algún artículo antes de continuar.'); return; }
+  cartStep.style.display = 'none';
+  cartFooter.style.display = 'none';
+  formStep.style.display = 'block';
+  formFooter.style.display = 'block';
+}
+function showCartStep(){
+  cartStep.style.display = 'block';
+  cartFooter.style.display = 'block';
+  formStep.style.display = 'none';
+  formFooter.style.display = 'none';
+}
+
+btnContinuar.addEventListener('click', showFormStep);
+btnVolver.addEventListener('click', showCartStep);
+btnVaciar.addEventListener('click', ()=>{ emptyCart(); });
+
+// Envío del pedido (demo con mailto)
+btnEnviar.addEventListener('click', ()=>{
+  const nombre   = document.getElementById('f-nombre').value.trim();
+  const email    = document.getElementById('f-email').value.trim();
+  const tel      = document.getElementById('f-telefono').value.trim();
+  const pais     = document.getElementById('f-pais').value.trim();
+  const dir      = document.getElementById('f-direccion').value.trim();
+  const ciudad   = document.getElementById('f-ciudad').value.trim();
+  const cp       = document.getElementById('f-cp').value.trim();
+  const notas    = document.getElementById('f-notas').value.trim();
+
+  // validación mínima
+  if(!nombre || !email || !tel || !pais || !dir || !ciudad || !cp){
+    document.getElementById('checkout-msg').textContent = 'Completa todos los campos obligatorios.';
+    return;
+  }
+  if(!state.cart.length){
+    document.getElementById('checkout-msg').textContent = 'Tu carrito está vacío.';
+    return;
+  }
+
+  const total = state.cart.reduce((s,i)=>s+i.precio*i.qty,0);
+  const lineas = state.cart.map(i=>`- ${i.nombre} (talla ${i.talla}) x${i.qty} → ${money(i.precio*i.qty)}`).join('%0D%0A');
+
+  const cuerpo =
+`Pedido Hank's & Company
+
+Artículos:
+${state.cart.map(i=>`- ${i.nombre} (talla ${i.talla}) x${i.qty} → ${i.precio*i.qty} €`).join('\n')}
+
+Total: ${total.toFixed(2)} €
+
+Datos del cliente:
+Nombre: ${nombre}
+Email: ${email}
+Teléfono: ${tel}
+Dirección: ${dir}, ${cp} ${ciudad}, ${pais}
+Notas: ${notas || '-'}
+`.replace(/\n/g,'%0D%0A');
+
+  // Cambia aquí el correo receptor
+  const destinatario = 'hernangm2006@gmail.com';
+  const asunto = encodeURIComponent("Nuevo pedido - Hank's & Company");
+  const mailto = `mailto:${destinatario}?subject=${asunto}&body=${cuerpo}`;
+
+  window.location.href = mailto;
+  document.getElementById('checkout-msg').textContent = 'Abriendo tu cliente de correo para enviar el pedido…';
+});
+
+// arranque
+renderCart();
+</script>
 
     // Filtros
     q.addEventListener('input', ()=>{ state.query = q.value.trim().toLowerCase(); render(); });
