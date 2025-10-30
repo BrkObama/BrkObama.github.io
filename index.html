@@ -1,4 +1,4 @@
-<!-- v7: consejo aplicado (Poppins/Montserrat), sin bloque extra -->
+<!-- v8: carrito integrado (resumen → datos → mailto) + Poppins/Montserrat -->
 <!doctype html>
 <html lang="es">
 <head>
@@ -6,18 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Hank&#39;s &amp; Company — Tienda Online</title>
   <meta name="description" content="Hank&#39;s &amp; Company · Moda esencial con envío rápido. Compra camisetas, sudaderas y accesorios." />
-
-  <!-- Tipografías pro: Poppins/Montserrat -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --bg:#0a0a0a;          /* negro base */
-      --panel:#0e0e0e;       /* panel oscuro */
-      --text:#e6ffe9;        /* texto claro con tinte verdoso */
-      --muted:#9bb29e;       /* gris verdoso */
-      --brand:#2f7d32;       /* verde Hank's */
-      --brand-2:#1d5e20;     /* verde oscuro */
+      --bg:#0a0a0a; --panel:#0e0e0e; --text:#e6ffe9; --muted:#9bb29e;
+      --brand:#2f7d32; --brand-2:#1d5e20;
       --stroke:rgba(230,255,233,.10);
       --card:linear-gradient(180deg,rgba(14,14,14,.92),rgba(14,14,14,.6));
     }
@@ -29,14 +23,11 @@
         radial-gradient(900px 420px at 10% -20%, rgba(29,94,32,.12), transparent 60%),
         var(--bg);
       color:var(--text);
-      /* Consejo aplicado: Poppins/Montserrat */
       font:16px/1.6 "Poppins","Montserrat",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
       -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
     }
-    /* Jerarquía tipo Sense/Refresh: títulos pesados, cuerpo regular/seminegrita */
     h1,h2,h3{font-family:"Poppins","Montserrat",sans-serif;font-weight:800;letter-spacing:.2px;margin:0 0 .4rem}
-    p,li,button,input,select{font-family:"Poppins","Montserrat",sans-serif;font-weight:400}
-    .fw600{font-weight:600}
+    p,li,button,input,select,textarea{font-family:"Poppins","Montserrat",sans-serif;font-weight:400}
     img{max-width:100%;display:block}
     a{color:inherit;text-decoration:none}
     .container{max-width:1150px;margin:auto;padding:0 1rem}
@@ -81,21 +72,26 @@
     .size.active{border-color:rgba(47,125,50,.7);box-shadow:0 0 0 2px rgba(47,125,50,.18) inset}
     .buy{margin-top:auto;display:flex;gap:.5rem}
 
-    /* Carrito lateral */
+    /* Drawer / carrito */
     .drawer{position:fixed;inset:0 0 0 auto;display:none}
     .drawer.open{display:block}
-    .overlay{position:absolute;inset:0;background:rgba(0,0,0,.5)}
-    .panel{position:absolute;right:0;top:0;height:100%;width:min(420px,92%);background:linear-gradient(180deg,rgba(12,12,12,.98),rgba(12,12,12,.92));border-left:1px solid var(--stroke);display:grid;grid-template-rows:auto 1fr auto}
+    .overlay{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+    .panel{position:absolute;right:0;top:0;height:100%;width:min(440px,92%);background:linear-gradient(180deg,rgba(12,12,12,.98),rgba(12,12,12,.92));border-left:1px solid var(--stroke);display:grid;grid-template-rows:auto 1fr auto}
     .panel header,.panel footer{padding:1rem;border-bottom:1px solid var(--stroke)}
     .panel footer{border-top:1px solid var(--stroke);border-bottom:none}
     .items{overflow:auto;padding:1rem;display:grid;gap:.8rem}
     .item{display:grid;grid-template-columns:64px 1fr auto;gap:.7rem;align-items:center;border:1px solid var(--stroke);border-radius:.6rem;padding:.5rem;background:rgba(20,20,20,.65)}
     .qty{display:flex;align-items:center;gap:.4rem}
+    .field{display:block}
+    .field input,.field textarea{
+      width:100%;padding:.65rem .8rem;border-radius:.6rem;border:1px solid var(--stroke);
+      background:#0f0f0f;color:var(--text)
+    }
 
     /* Footer */
     .footer{border-top:1px solid var(--stroke);padding:2rem 0;color:var(--muted);text-align:center}
 
-    /* Slogan sección */
+    /* Artists */
     .artists{padding:2.2rem 0 3rem}
     .artists .wrap{display:grid;gap:1rem;grid-template-columns:1fr .9fr;align-items:center;border:1px solid var(--stroke);border-radius:1rem;padding:1rem;background:linear-gradient(180deg,rgba(18,18,18,.9),rgba(18,18,18,.6))}
     .artists h3{margin:.2rem 0}
@@ -189,27 +185,90 @@
     </div>
   </section>
 
-  <!-- Drawer del carrito -->
+  <!-- Drawer del carrito (Resumen + Datos) -->
   <div id="drawer" class="drawer" aria-hidden="true">
     <div class="overlay" id="close-drawer" aria-label="Cerrar carrito" role="button" tabindex="0"></div>
+
     <div class="panel" role="dialog" aria-labelledby="carrito-titulo">
       <header>
         <h3 id="carrito-titulo" style="margin:.2rem 0">Tu carrito</h3>
-        <p style="margin:0;color:var(--muted)">Revisa tus artículos antes de pagar.</p>
+        <p style="margin:0;color:var(--muted)">Revisa tus artículos o continúa para introducir tus datos.</p>
       </header>
-      <div id="cart-items" class="items"></div>
-      <footer>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem">
-          <strong>Total</strong>
-          <strong id="cart-total">0,00 €</strong>
+
+      <!-- Paso 1: Resumen -->
+      <div id="cart-step" class="items"></div>
+
+      <!-- Paso 2: Datos del cliente -->
+      <div id="form-step" class="items" style="display:none">
+        <form id="checkout-form" novalidate>
+          <div style="display:grid;gap:.8rem">
+            <div style="display:grid;gap:.6rem;grid-template-columns:1fr 1fr">
+              <label class="field">Nombre y apellidos
+                <input type="text" id="f-nombre" required placeholder="Nombre y apellidos">
+              </label>
+              <label class="field">Email
+                <input type="email" id="f-email" required placeholder="tucorreo@ejemplo.com">
+              </label>
+            </div>
+
+            <div style="display:grid;gap:.6rem;grid-template-columns:1fr 1fr">
+              <label class="field">Teléfono
+                <input type="tel" id="f-telefono" required placeholder="+34 600 000 000" pattern="^[0-9+\\s-]{7,}$">
+              </label>
+              <label class="field">País
+                <input type="text" id="f-pais" required value="España">
+              </label>
+            </div>
+
+            <label class="field">Dirección
+              <input type="text" id="f-direccion" required placeholder="Calle, número, piso">
+            </label>
+
+            <div style="display:grid;gap:.6rem;grid-template-columns:2fr 1fr">
+              <label class="field">Ciudad
+                <input type="text" id="f-ciudad" required>
+              </label>
+              <label class="field">Código postal
+                <input type="text" id="f-cp" required pattern="^[0-9]{4,6}$">
+              </label>
+            </div>
+
+            <label class="field">Notas del pedido (opcional)
+              <textarea id="f-notas" rows="3" placeholder="Instrucciones de entrega…"></textarea>
+            </label>
+          </div>
+        </form>
+      </div>
+
+      <footer id="drawer-footer">
+        <!-- Footer dinámico (cambia según paso) -->
+        <div id="cart-footer">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem">
+            <strong>Total</strong>
+            <strong id="cart-total">0,00 €</strong>
+          </div>
+          <div style="display:flex;gap:.6rem">
+            <button class="btn" id="btn-vaciar" type="button">Vaciar</button>
+            <button class="btn brand" id="btn-continuar" type="button">Continuar</button>
+          </div>
         </div>
-        <button class="btn brand" id="btn-checkout">Continuar al pago</button>
-        <p id="checkout-msg" style="margin:.5rem 0 0;color:var(--muted)"></p>
+
+        <div id="form-footer" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem">
+            <strong>Total</strong>
+            <strong id="cart-total-form">0,00 €</strong>
+          </div>
+          <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+            <button class="btn" id="btn-volver" type="button">Volver</button>
+            <button class="btn brand" id="btn-enviar" type="button">Enviar pedido (demo)</button>
+          </div>
+          <p id="checkout-msg" style="margin:.5rem 0 0;color:var(--muted)"></p>
+        </div>
       </footer>
     </div>
   </div>
 
-  <!-- Slogan artistas -->
+  <!-- Artists -->
   <section class="container artists">
     <div class="wrap">
       <div>
@@ -225,7 +284,7 @@
   </footer>
 
   <script>
-    // Datos de demo con tus fotos
+    // ===== Datos de demo con tus fotos =====
     const PRODUCTS = [
       {id:'tee-skate', nombre:'Camiseta Skate Navy', tipo:'camiseta', precio:24.90, popular:10, img:'./assets/tee-skate.jpg', tallas:['S','M','L','XL'], etiqueta:'Nuevo'},
       {id:'tee-grid', nombre:'Camiseta Grid Logo', tipo:'camiseta', precio:22.90, popular:9, img:'./assets/tee-grid.jpg', tallas:['S','M','L','XL']},
@@ -298,202 +357,107 @@
       });
     }
 
-  //<!-- Drawer del carrito (Resumen + Datos) -->
-<div id="drawer" class="drawer" aria-hidden="true">
-  <div class="overlay" id="close-drawer" aria-label="Cerrar carrito" role="button" tabindex="0"></div>
+    // ===== Carrito mejorado (resumen → datos → mailto) =====
+    const drawer = document.getElementById('drawer');
+    const btnCart = document.getElementById('btn-carrito');
+    const cartStep = document.getElementById('cart-step');
+    const formStep = document.getElementById('form-step');
+    const cartFooter = document.getElementById('cart-footer');
+    const formFooter = document.getElementById('form-footer');
+    const cartTotal = document.getElementById('cart-total');
+    const cartTotalForm = document.getElementById('cart-total-form');
+    const cartCount = document.getElementById('cart-count');
 
-  <div class="panel" role="dialog" aria-labelledby="carrito-titulo">
-    <header>
-      <h3 id="carrito-titulo" style="margin:.2rem 0">Tu carrito</h3>
-      <p style="margin:0;color:var(--muted)">Revisa tus artículos o continúa para introducir tus datos.</p>
-    </header>
+    const btnContinuar = document.getElementById('btn-continuar');
+    const btnVaciar = document.getElementById('btn-vaciar');
+    const btnVolver = document.getElementById('btn-volver');
+    const btnEnviar = document.getElementById('btn-enviar');
 
-    <!-- Paso 1: Resumen -->
-    <div id="cart-step" class="items"></div>
+    function openDrawer(){ drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); showCartStep(); }
+    function closeDrawer(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); }
 
-    <!-- Paso 2: Datos del cliente -->
-    <div id="form-step" class="items" style="display:none">
-      <form id="checkout-form" novalidate>
-        <div style="display:grid;gap:.8rem">
-          <div style="display:grid;gap:.6rem;grid-template-columns:1fr 1fr">
-            <label>Nombre y apellidos
-              <input class="input" type="text" id="f-nombre" required placeholder="Nombre y apellidos" style="width:100%;padding:.6rem;border-radius:.6rem;border:1px solid var(--stroke);background:#0f0f0f;color:var(--text)">
-            </label>
-            <label>Email
-              <input class="input" type="email" id="f-email" required placeholder="tucorreo@ejemplo.com" style="width:100%;padding:.6rem;border-radius:.6rem;border:1px solid var(--stroke);background:#0f0f0f;color:var(--text)">
-            </label>
+    btnCart.addEventListener('click',()=> openDrawer());
+    document.getElementById('close-drawer').addEventListener('click',()=> closeDrawer());
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeDrawer(); });
+
+    function addToCart(item){
+      const key = item.id + '|' + item.talla;
+      const found = state.cart.find(i=>i.key===key);
+      if(found) found.qty += 1; else state.cart.push({key, id:item.id, nombre:item.nombre, talla:item.talla, precio:item.precio, img:item.img, qty:1});
+      renderCart();
+      openDrawer();
+    }
+    function removeFromCart(key){ state.cart = state.cart.filter(i=>i.key!==key); renderCart(); }
+    function changeQty(key, delta){
+      const it = state.cart.find(i=>i.key===key);
+      if(!it) return;
+      it.qty += delta; if(it.qty<=0) removeFromCart(key); else renderCart();
+    }
+    function emptyCart(){ state.cart = []; renderCart(); }
+
+    function renderCart(){
+      cartStep.innerHTML = state.cart.length ? state.cart.map(i=>`
+        <div class="item">
+          <img src="${i.img}" alt="${i.nombre}" width="64" height="64"/>
+          <div>
+            <div style="display:flex;justify-content:space-between;gap:.6rem">
+              <strong>${i.nombre}</strong>
+              <button class="btn" onclick="removeFromCart('${i.key}')" title="Quitar">✕</button>
+            </div>
+            <div style="color:var(--muted)">Talla ${i.talla}</div>
+            <div class="qty"><button class="btn" onclick="changeQty('${i.key}',-1)">−</button><span>${i.qty}</span><button class="btn" onclick="changeQty('${i.key}',1)">＋</button></div>
           </div>
+          <div><strong>${money(i.precio*i.qty)}</strong></div>
+        </div>`).join('') : '<p style="color:var(--muted)">Tu carrito está vacío.</p>';
+      const total = state.cart.reduce((s,i)=>s+i.precio*i.qty,0);
+      cartTotal.textContent = money(total);
+      cartTotalForm.textContent = money(total);
+      cartCount.textContent = state.cart.reduce((s,i)=>s+i.qty,0);
+    }
 
-          <div style="display:grid;gap:.6rem;grid-template-columns:1fr 1fr">
-            <label>Teléfono
-              <input class="input" type="tel" id="f-telefono" required placeholder="+34 600 000 000" pattern="^[0-9+\\s-]{7,}$" style="width:100%;padding:.6rem;border-radius:.6rem;border:1px solid var(--stroke);background:#0f0f0f;color:var(--text)">
-            </label>
-            <label>País
-              <input class="input" type="text" id="f-pais" required value="España" style="width:100%;padding:.6rem;border-radius:.6rem;border:1px solid var(--stroke);background:#0f0f0f;color:var(--text)">
-            </label>
-          </div>
+    function showFormStep(){
+      if(!state.cart.length){ alert('Añade algún artículo antes de continuar.'); return; }
+      cartStep.style.display = 'none';
+      cartFooter.style.display = 'none';
+      formStep.style.display = 'block';
+      formFooter.style.display = 'block';
+    }
+    function showCartStep(){
+      cartStep.style.display = 'block';
+      cartFooter.style.display = 'block';
+      formStep.style.display = 'none';
+      formFooter.style.display = 'none';
+    }
 
-          <label>Dirección
-            <input class="input" type="text" id="f-direccion" required placeholder="Calle, número, piso" style="width:100%;padding:.6rem;border-radius:.6rem;border:1px solid var(--stroke);background:#0f0f0f;color:var(--text)">
-          </label>
+    document.getElementById('btn-continuar').addEventListener('click', showFormStep);
+    document.getElementById('btn-volver').addEventListener('click', showCartStep);
+    document.getElementById('btn-vaciar').addEventListener('click', ()=>{ emptyCart(); });
 
-          <div style="display:grid;gap:.6rem;grid-template-columns:2fr 1fr">
-            <label>Ciudad
-              <input class="input" type="text" id="f-ciudad" required style="width:100%;padding:.6rem;border-radius:.6rem;border:1px solid var(--stroke);background:#0f0f0f;color:var(--text)">
-            </label>
-            <label>Código postal
-              <input class="input" type="text" id="f-cp" required pattern="^[0-9]{4,6}$" style="width:100%;padding:.6rem;border-radius:.6rem;border:1px solid var(--stroke);background:#0f0f0f;color:var(--text)">
-            </label>
-          </div>
+    document.getElementById('btn-enviar').addEventListener('click', ()=>{
+      const nombre   = document.getElementById('f-nombre').value.trim();
+      const email    = document.getElementById('f-email').value.trim();
+      const tel      = document.getElementById('f-telefono').value.trim();
+      const pais     = document.getElementById('f-pais').value.trim();
+      const dir      = document.getElementById('f-direccion').value.trim();
+      const ciudad   = document.getElementById('f-ciudad').value.trim();
+      const cp       = document.getElementById('f-cp').value.trim();
+      const notas    = document.getElementById('f-notas').value.trim();
 
-          <label>Notas del pedido (opcional)
-            <textarea id="f-notas" rows="3" placeholder="Instrucciones de entrega…" style="width:100%;padding:.6rem;border-radius:.6rem;border:1px solid var(--stroke);background:#0f0f0f;color:var(--text)"></textarea>
-          </label>
-        </div>
-      </form>
-    </div>
+      if(!nombre || !email || !tel || !pais || !dir || !ciudad || !cp){
+        document.getElementById('checkout-msg').textContent = 'Completa todos los campos obligatorios.';
+        return;
+      }
+      if(!state.cart.length){
+        document.getElementById('checkout-msg').textContent = 'Tu carrito está vacío.';
+        return;
+      }
 
-    <footer id="drawer-footer">
-      <!-- Footer dinámico (cambia según paso) -->
-      <div id="cart-footer">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem">
-          <strong>Total</strong>
-          <strong id="cart-total">0,00 €</strong>
-        </div>
-        <div style="display:flex;gap:.6rem">
-          <button class="btn" id="btn-vaciar">Vaciar</button>
-          <button class="btn brand" id="btn-continuar">Continuar</button>
-        </div>
-      </div>
-
-      <div id="form-footer" style="display:none">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem">
-          <strong>Total</strong>
-          <strong id="cart-total-form">0,00 €</strong>
-        </div>
-        <div style="display:flex;gap:.6rem;flex-wrap:wrap">
-          <button class="btn" id="btn-volver">Volver</button>
-          <button class="btn brand" id="btn-enviar">Enviar pedido (demo)</button>
-        </div>
-        <p id="checkout-msg" style="margin:.5rem 0 0;color:var(--muted)"></p>
-      </div>
-    </footer>
-  </div>
-</div>
-<script>
-     
-// ===== Carrito mejorado (paso 1 Resumen → paso 2 Datos) =====
-const drawer = document.getElementById('drawer');
-const btnCart = document.getElementById('btn-carrito');
-const cartStep = document.getElementById('cart-step');
-const formStep = document.getElementById('form-step');
-const cartFooter = document.getElementById('cart-footer');
-const formFooter = document.getElementById('form-footer');
-const cartTotal = document.getElementById('cart-total');
-const cartTotalForm = document.getElementById('cart-total-form');
-const cartCount = document.getElementById('cart-count');
-
-const btnContinuar = document.getElementById('btn-continuar');
-const btnVaciar = document.getElementById('btn-vaciar');
-const btnVolver = document.getElementById('btn-volver');
-const btnEnviar = document.getElementById('btn-enviar');
-
-function openDrawer(){ drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); showCartStep(); }
-function closeDrawer(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); }
-
-// abrir/cerrar
-btnCart.addEventListener('click',()=> openDrawer());
-document.getElementById('close-drawer').addEventListener('click',()=> closeDrawer());
-document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeDrawer(); });
-
-// estado del carrito (usa el que ya tienes)
-function addToCart(item){
-  const key = item.id + '|' + item.talla;
-  const found = state.cart.find(i=>i.key===key);
-  if(found) found.qty += 1; else state.cart.push({key, id:item.id, nombre:item.nombre, talla:item.talla, precio:item.precio, img:item.img, qty:1});
-  renderCart();
-  openDrawer();
-}
-function removeFromCart(key){ state.cart = state.cart.filter(i=>i.key!==key); renderCart(); }
-function changeQty(key, delta){
-  const it = state.cart.find(i=>i.key===key);
-  if(!it) return;
-  it.qty += delta; if(it.qty<=0) removeFromCart(key); else renderCart();
-}
-function emptyCart(){ state.cart = []; renderCart(); }
-
-// UI de resumen
-function renderCart(){
-  // items
-  cartStep.innerHTML = state.cart.length ? state.cart.map(i=>`
-    <div class="item">
-      <img src="${i.img}" alt="${i.nombre}" width="64" height="64"/>
-      <div>
-        <div style="display:flex;justify-content:space-between;gap:.6rem">
-          <strong>${i.nombre}</strong>
-          <button class="btn" onclick="removeFromCart('${i.key}')" title="Quitar">✕</button>
-        </div>
-        <div style="color:var(--muted)">Talla ${i.talla}</div>
-        <div class="qty"><button class="btn" onclick="changeQty('${i.key}',-1)">−</button><span>${i.qty}</span><button class="btn" onclick="changeQty('${i.key}',1)">＋</button></div>
-      </div>
-      <div><strong>${money(i.precio*i.qty)}</strong></div>
-    </div>`).join('') : '<p style="color:var(--muted)">Tu carrito está vacío.</p>';
-  // totales
-  const total = state.cart.reduce((s,i)=>s+i.precio*i.qty,0);
-  cartTotal.textContent = money(total);
-  cartTotalForm.textContent = money(total);
-  // contador
-  cartCount.textContent = state.cart.reduce((s,i)=>s+i.qty,0);
-}
-
-// paso → formulario
-function showFormStep(){
-  if(!state.cart.length){ alert('Añade algún artículo antes de continuar.'); return; }
-  cartStep.style.display = 'none';
-  cartFooter.style.display = 'none';
-  formStep.style.display = 'block';
-  formFooter.style.display = 'block';
-}
-function showCartStep(){
-  cartStep.style.display = 'block';
-  cartFooter.style.display = 'block';
-  formStep.style.display = 'none';
-  formFooter.style.display = 'none';
-}
-
-btnContinuar.addEventListener('click', showFormStep);
-btnVolver.addEventListener('click', showCartStep);
-btnVaciar.addEventListener('click', ()=>{ emptyCart(); });
-
-// Envío del pedido (demo con mailto)
-btnEnviar.addEventListener('click', ()=>{
-  const nombre   = document.getElementById('f-nombre').value.trim();
-  const email    = document.getElementById('f-email').value.trim();
-  const tel      = document.getElementById('f-telefono').value.trim();
-  const pais     = document.getElementById('f-pais').value.trim();
-  const dir      = document.getElementById('f-direccion').value.trim();
-  const ciudad   = document.getElementById('f-ciudad').value.trim();
-  const cp       = document.getElementById('f-cp').value.trim();
-  const notas    = document.getElementById('f-notas').value.trim();
-
-  // validación mínima
-  if(!nombre || !email || !tel || !pais || !dir || !ciudad || !cp){
-    document.getElementById('checkout-msg').textContent = 'Completa todos los campos obligatorios.';
-    return;
-  }
-  if(!state.cart.length){
-    document.getElementById('checkout-msg').textContent = 'Tu carrito está vacío.';
-    return;
-  }
-
-  const total = state.cart.reduce((s,i)=>s+i.precio*i.qty,0);
-  const lineas = state.cart.map(i=>`- ${i.nombre} (talla ${i.talla}) x${i.qty} → ${money(i.precio*i.qty)}`).join('%0D%0A');
-
-  const cuerpo =
+      const total = state.cart.reduce((s,i)=>s+i.precio*i.qty,0);
+      const cuerpoTxt =
 `Pedido Hank's & Company
 
 Artículos:
-${state.cart.map(i=>`- ${i.nombre} (talla ${i.talla}) x${i.qty} → ${i.precio*i.qty} €`).join('\n')}
+${state.cart.map(i=>`- ${i.nombre} (talla ${i.talla}) x${i.qty} → ${(i.precio*i.qty).toFixed(2)} €`).join('\n')}
 
 Total: ${total.toFixed(2)} €
 
@@ -502,34 +466,20 @@ Nombre: ${nombre}
 Email: ${email}
 Teléfono: ${tel}
 Dirección: ${dir}, ${cp} ${ciudad}, ${pais}
-Notas: ${notas || '-'}
-`.replace(/\n/g,'%0D%0A');
+Notas: ${notas || '-'}`;
 
-  // Cambia aquí el correo receptor
-  const destinatario = 'hernangm2006@gmail.com';
-  const asunto = encodeURIComponent("Nuevo pedido - Hank's & Company");
-  const mailto = `mailto:${destinatario}?subject=${asunto}&body=${cuerpo}`;
-
-  window.location.href = mailto;
-  document.getElementById('checkout-msg').textContent = 'Abriendo tu cliente de correo para enviar el pedido…';
-});
-
-// arranque
-renderCart();
-</script>
+      const destinatario = 'hernangm2006@gmail.com'; // cámbialo si quieres
+      const asunto = encodeURIComponent("Nuevo pedido - Hank's & Company");
+      const cuerpo = encodeURIComponent(cuerpoTxt);
+      window.location.href = `mailto:${destinatario}?subject=${asunto}&body=${cuerpo}`;
+      document.getElementById('checkout-msg').textContent = 'Abriendo tu cliente de correo para enviar el pedido…';
+    });
 
     // Filtros
     q.addEventListener('input', ()=>{ state.query = q.value.trim().toLowerCase(); render(); });
     tipo.addEventListener('change', ()=>{ state.tipo = tipo.value; render(); });
     orden.addEventListener('change', ()=>{ state.orden = orden.value; render(); });
     btnLimpiar.addEventListener('click', ()=>{ q.value=''; tipo.value=''; orden.value='pop'; state.query=''; state.tipo=''; state.orden='pop'; render(); });
-
-    // Checkout (demo)
-    document.getElementById('btn-checkout').addEventListener('click',()=>{
-      const msg = document.getElementById('checkout-msg');
-      if(!state.cart.length){ msg.textContent = 'Añade algo al carrito antes de pagar 😉'; return; }
-      msg.textContent = 'Demo estática. Aquí conectaríamos Stripe / PayPal o un backend.';
-    });
 
     // Init
     document.getElementById('year').textContent = new Date().getFullYear();
