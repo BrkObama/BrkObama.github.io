@@ -139,7 +139,9 @@
         <a href="#catalogo">Catálogo</a>
         <a href="#contacto">Contacto</a>
       </nav>
-      <button class="btn brand" id="btn-carrito" aria-label="Abrir carrito">🛒 <span id="cart-count" aria-live="polite">0</span></button>
+      <button class="btn brand" id="btn-carrito" type="button" onclick="openDrawer()" aria-label="Abrir carrito">
+        🛒 <span id="cart-count" aria-live="polite">0</span>
+      </button>
     </div>
   </header>
 
@@ -409,6 +411,7 @@ function openDrawer() {
   drawer.setAttribute('aria-hidden', 'false');
   showCartStep();
 }
+window.openDrawer = openDrawer;
 
 function closeDrawer() {
   drawer.classList.remove('open');
