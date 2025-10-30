@@ -124,6 +124,23 @@
       mix-blend-mode:screen;
       pointer-events:none;
     }
+    /* --- FIX: doble barra negra bajo el header --- */
+
+/* Deja un único borde bajo la cabecera */
+header{ border-bottom:1px solid var(--stroke); }
+
+/* Quita bordes duplicados en barras internas */
+.nav, .navbar, .site-header, .topbar{ border-bottom:0 !important; }
+
+/* Evita que el primer bloque meta otro borde arriba */
+main, .hero, .container.hero{ border-top:0 !important; }
+
+/* Si quedó un separador del header, anúlalo */
+.header-spacer{ display:none !important; height:0 !important; }
+
+/* (Por si el HTML corto dejó esto) elimina el empuje manual */
+main{ margin-top:0 !important; }
+
   </style>
 </head>
 <body>
