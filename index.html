@@ -652,38 +652,5 @@ Notas: ${notas || '-'}`;
       🛒 <span id="cart-count" aria-live="polite">0</span>
     </button>
   </header>
-  
-  <main>
-    <h1>Only for Hank's Brand</h1>
-    <p>Negro + verde Hank's. Tejidos duraderos, cortes que sientan bien y precios sin humo.</p>
-    <br>
-    <button>Ver catálogo</button>
-    <button>Novedades</button>
-  </main>
-
-  <!-- PANEL DEL CARRITO -->
-  <aside id="drawer" class="drawer" aria-hidden="true">
-    <header>Tu carrito</header>
-    <div class="content">
-      <p>Tu carrito está vacío por ahora 🛍️</p>
-    </div>
-  </aside>
-
-  <!-- OVERLAY -->
-  <div class="overlay" id="overlay"
-    onclick="(function(el){el.classList.remove('open');el.setAttribute('aria-hidden','true');document.getElementById('overlay').style.display='none';})(document.getElementById('drawer'));"></div>
-
-  <script>
-    // hace global la función por si se necesita
-    function openDrawer(){
-      const drawer = document.getElementById('drawer');
-      if(!drawer) return;
-      drawer.classList.add('open');
-      drawer.setAttribute('aria-hidden','false');
-      document.getElementById('overlay').style.display = 'block';
-    }
-    window.openDrawer = openDrawer;
-  </script>
-
 </body>
 </html>
