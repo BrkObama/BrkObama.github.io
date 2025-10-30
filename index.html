@@ -387,107 +387,142 @@
       });
     }
 
-    // ===== Carrito mejorado (resumen → datos → mailto) =====
-    const drawer = document.getElementById('drawer');
-    const btnCart = document.getElementById('btn-carrito');
-    const cartStep = document.getElementById('cart-step');
-    const formStep = document.getElementById('form-step');
-    const cartFooter = document.getElementById('cart-footer');
-    const formFooter = document.getElementById('form-footer');
-    const cartTotal = document.getElementById('cart-total');
-    const cartTotalForm = document.getElementById('cart-total-form');
-    const cartCount = document.getElementById('cart-count');
+// ===== Carrito funcional: abrir, cerrar y manejar productos =====
+const drawer = document.getElementById('drawer');
+const btnCart = document.getElementById('btn-carrito');
+const closeDrawerBtn = document.getElementById('close-drawer');
+const cartStep = document.getElementById('cart-step');
+const formStep = document.getElementById('form-step');
+const cartFooter = document.getElementById('cart-footer');
+const formFooter = document.getElementById('form-footer');
+const cartTotal = document.getElementById('cart-total');
+const cartTotalForm = document.getElementById('cart-total-form');
+const cartCount = document.getElementById('cart-count');
 
-    const btnContinuar = document.getElementById('btn-continuar');
-    const btnVaciar = document.getElementById('btn-vaciar');
-    const btnVolver = document.getElementById('btn-volver');
-    const btnEnviar = document.getElementById('btn-enviar');
+const btnContinuar = document.getElementById('btn-continuar');
+const btnVaciar = document.getElementById('btn-vaciar');
+const btnVolver = document.getElementById('btn-volver');
+const btnEnviar = document.getElementById('btn-enviar');
 
-    function openDrawer(){ drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); showCartStep(); }
-    function closeDrawer(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); }
+function openDrawer() {
+  drawer.classList.add('open');
+  drawer.setAttribute('aria-hidden', 'false');
+  showCartStep();
+}
 
-    btnCart.addEventListener('click',()=> openDrawer());
-    document.getElementById('close-drawer').addEventListener('click',()=> closeDrawer());
-    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeDrawer(); });
+function closeDrawer() {
+  drawer.classList.remove('open');
+  drawer.setAttribute('aria-hidden', 'true');
+}
 
-    function addToCart(item){
-      const key = item.id + '|' + item.talla;
-      const found = state.cart.find(i=>i.key===key);
-      if(found) found.qty += 1; else state.cart.push({key, id:item.id, nombre:item.nombre, talla:item.talla, precio:item.precio, img:item.img, qty:1});
-      renderCart();
-      openDrawer();
-    }
-    function removeFromCart(key){ state.cart = state.cart.filter(i=>i.key!==key); renderCart(); }
-    function changeQty(key, delta){
-      const it = state.cart.find(i=>i.key===key);
-      if(!it) return;
-      it.qty += delta; if(it.qty<=0) removeFromCart(key); else renderCart();
-    }
-    function emptyCart(){ state.cart = []; renderCart(); }
+// Conecta el botón del carrito
+btnCart.addEventListener('click', openDrawer);
+closeDrawerBtn.addEventListener('click', closeDrawer);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDrawer(); });
 
-    function renderCart(){
-      cartStep.innerHTML = state.cart.length ? state.cart.map(i=>`
-        <div class="item">
-          <img src="${i.img}" alt="${i.nombre}" width="64" height="64"/>
-          <div>
-            <div style="display:flex;justify-content:space-between;gap:.6rem">
-              <strong>${i.nombre}</strong>
-              <button class="btn" onclick="removeFromCart('${i.key}')" title="Quitar">✕</button>
-            </div>
-            <div style="color:var(--muted)">Talla ${i.talla}</div>
-            <div class="qty"><button class="btn" onclick="changeQty('${i.key}',-1)">−</button><span>${i.qty}</span><button class="btn" onclick="changeQty('${i.key}',1)">＋</button></div>
+function addToCart(item) {
+  const key = item.id + '|' + item.talla;
+  const found = state.cart.find(i => i.key === key);
+  if (found) found.qty += 1;
+  else state.cart.push({ key, id: item.id, nombre: item.nombre, talla: item.talla, precio: item.precio, img: item.img, qty: 1 });
+  renderCart();
+  openDrawer();
+}
+
+function removeFromCart(key) {
+  state.cart = state.cart.filter(i => i.key !== key);
+  renderCart();
+}
+
+function changeQty(key, delta) {
+  const it = state.cart.find(i => i.key === key);
+  if (!it) return;
+  it.qty += delta;
+  if (it.qty <= 0) removeFromCart(key);
+  else renderCart();
+}
+
+function emptyCart() {
+  state.cart = [];
+  renderCart();
+}
+
+function renderCart() {
+  cartStep.innerHTML = state.cart.length
+    ? state.cart.map(i => `
+      <div class="item">
+        <img src="${i.img}" alt="${i.nombre}" width="64" height="64"/>
+        <div>
+          <div style="display:flex;justify-content:space-between;gap:.6rem">
+            <strong>${i.nombre}</strong>
+            <button class="btn" onclick="removeFromCart('${i.key}')" title="Quitar">✕</button>
           </div>
-          <div><strong>${money(i.precio*i.qty)}</strong></div>
-        </div>`).join('') : '<p style="color:var(--muted)">Tu carrito está vacío.</p>';
-      const total = state.cart.reduce((s,i)=>s+i.precio*i.qty,0);
-      cartTotal.textContent = money(total);
-      cartTotalForm.textContent = money(total);
-      cartCount.textContent = state.cart.reduce((s,i)=>s+i.qty,0);
-    }
+          <div style="color:var(--muted)">Talla ${i.talla}</div>
+          <div class="qty">
+            <button class="btn" onclick="changeQty('${i.key}',-1)">−</button>
+            <span>${i.qty}</span>
+            <button class="btn" onclick="changeQty('${i.key}',1)">＋</button>
+          </div>
+        </div>
+        <div><strong>${money(i.precio * i.qty)}</strong></div>
+      </div>`).join('')
+    : '<p style="color:var(--muted)">Tu carrito está vacío.</p>';
 
-    function showFormStep(){
-      if(!state.cart.length){ alert('Añade algún artículo antes de continuar.'); return; }
-      cartStep.style.display = 'none';
-      cartFooter.style.display = 'none';
-      formStep.style.display = 'block';
-      formFooter.style.display = 'block';
-    }
-    function showCartStep(){
-      cartStep.style.display = 'block';
-      cartFooter.style.display = 'block';
-      formStep.style.display = 'none';
-      formFooter.style.display = 'none';
-    }
+  const total = state.cart.reduce((s, i) => s + i.precio * i.qty, 0);
+  cartTotal.textContent = money(total);
+  cartTotalForm.textContent = money(total);
+  cartCount.textContent = state.cart.reduce((s, i) => s + i.qty, 0);
+}
 
-    document.getElementById('btn-continuar').addEventListener('click', showFormStep);
-    document.getElementById('btn-volver').addEventListener('click', showCartStep);
-    document.getElementById('btn-vaciar').addEventListener('click', ()=>{ emptyCart(); });
+function showFormStep() {
+  if (!state.cart.length) {
+    alert('Añade algún artículo antes de continuar.');
+    return;
+  }
+  cartStep.style.display = 'none';
+  cartFooter.style.display = 'none';
+  formStep.style.display = 'block';
+  formFooter.style.display = 'block';
+}
 
-    document.getElementById('btn-enviar').addEventListener('click', ()=>{
-      const nombre   = document.getElementById('f-nombre').value.trim();
-      const email    = document.getElementById('f-email').value.trim();
-      const tel      = document.getElementById('f-telefono').value.trim();
-      const pais     = document.getElementById('f-pais').value.trim();
-      const dir      = document.getElementById('f-direccion').value.trim();
-      const ciudad   = document.getElementById('f-ciudad').value.trim();
-      const cp       = document.getElementById('f-cp').value.trim();
-      const notas    = document.getElementById('f-notas').value.trim();
+function showCartStep() {
+  cartStep.style.display = 'block';
+  cartFooter.style.display = 'block';
+  formStep.style.display = 'none';
+  formFooter.style.display = 'none';
+}
 
-      if(!nombre || !email || !tel || !pais || !dir || !ciudad || !cp){
-        document.getElementById('checkout-msg').textContent = 'Completa todos los campos obligatorios.';
-        return;
-      }
-      if(!state.cart.length){
-        document.getElementById('checkout-msg').textContent = 'Tu carrito está vacío.';
-        return;
-      }
+// Botones inferiores
+btnContinuar.addEventListener('click', showFormStep);
+btnVolver.addEventListener('click', showCartStep);
+btnVaciar.addEventListener('click', emptyCart);
 
-      const total = state.cart.reduce((s,i)=>s+i.precio*i.qty,0);
-      const cuerpoTxt =
+// Enviar pedido (abre cliente de correo)
+btnEnviar.addEventListener('click', () => {
+  const nombre = document.getElementById('f-nombre').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const tel = document.getElementById('f-telefono').value.trim();
+  const pais = document.getElementById('f-pais').value.trim();
+  const dir = document.getElementById('f-direccion').value.trim();
+  const ciudad = document.getElementById('f-ciudad').value.trim();
+  const cp = document.getElementById('f-cp').value.trim();
+  const notas = document.getElementById('f-notas').value.trim();
+
+  if (!nombre || !email || !tel || !pais || !dir || !ciudad || !cp) {
+    document.getElementById('checkout-msg').textContent = 'Completa todos los campos obligatorios.';
+    return;
+  }
+  if (!state.cart.length) {
+    document.getElementById('checkout-msg').textContent = 'Tu carrito está vacío.';
+    return;
+  }
+
+  const total = state.cart.reduce((s, i) => s + i.precio * i.qty, 0);
+  const cuerpoTxt =
 `Pedido Hank's & Company
 
 Artículos:
-${state.cart.map(i=>`- ${i.nombre} (talla ${i.talla}) x${i.qty} → ${(i.precio*i.qty).toFixed(2)} €`).join('\n')}
+${state.cart.map(i => `- ${i.nombre} (talla ${i.talla}) x${i.qty} → ${(i.precio * i.qty).toFixed(2)} €`).join('\n')}
 
 Total: ${total.toFixed(2)} €
 
@@ -498,12 +533,12 @@ Teléfono: ${tel}
 Dirección: ${dir}, ${cp} ${ciudad}, ${pais}
 Notas: ${notas || '-'}`;
 
-      const destinatario = 'hernangm2006@gmail.com'; // cámbialo si quieres
-      const asunto = encodeURIComponent("Nuevo pedido - Hank's & Company");
-      const cuerpo = encodeURIComponent(cuerpoTxt);
-      window.location.href = `mailto:${destinatario}?subject=${asunto}&body=${cuerpo}`;
-      document.getElementById('checkout-msg').textContent = 'Abriendo tu cliente de correo para enviar el pedido…';
-    });
+  const destinatario = 'hernangm2006@gmail.com';
+  const asunto = encodeURIComponent("Nuevo pedido - Hank's & Company");
+  const cuerpo = encodeURIComponent(cuerpoTxt);
+  window.location.href = `mailto:${destinatario}?subject=${asunto}&body=${cuerpo}`;
+  document.getElementById('checkout-msg').textContent = 'Abriendo tu cliente de correo para enviar el pedido…';
+});
 
     // Filtros
     q.addEventListener('input', ()=>{ state.query = q.value.trim().toLowerCase(); render(); });
