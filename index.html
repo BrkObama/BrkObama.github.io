@@ -100,6 +100,30 @@
     @media (max-width: 1000px){.grid{grid-template-columns:repeat(3,1fr)}.hero{grid-template-columns:1fr}.artists .wrap{grid-template-columns:1fr}}
     @media (max-width: 720px){.grid{grid-template-columns:repeat(2,1fr)}.links{display:none}.hero{padding-top:4.2rem}}
     @media (max-width: 460px){.grid{grid-template-columns:1fr}}
+
+    /* VIDEO BG — añade el vídeo como fondo detrás del contenido */
+    .bgfx{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      top:64px;                 /* se recalcula por JS */
+      z-index:-1;
+      pointer-events:none;
+      overflow:hidden;
+    }
+    .bgfx video{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      filter:brightness(.38) saturate(1.1);
+    }
+    .bgfx-overlay{
+      position:absolute; inset:0;
+      background:
+        radial-gradient(1200px 600px at 85% -10%, rgba(47,125,50,.22), transparent 50%),
+        radial-gradient(900px 420px at 10% -20%, rgba(29,94,32,.14), transparent 55%);
+      mix-blend-mode:screen;
+      pointer-events:none;
+    }
   </style>
 </head>
 <body>
@@ -118,6 +142,12 @@
       <button class="btn brand" id="btn-carrito" aria-label="Abrir carrito">🛒 <span id="cart-count" aria-live="polite">0</span></button>
     </div>
   </header>
+
+  <!-- VIDEO BG (debajo del header) -->
+  <div class="bgfx">
+    <video id="bg-video" src="./assets/bg.mp4" autoplay muted loop playsinline></video>
+    <div class="bgfx-overlay"></div>
+  </div>
 
   <!-- Hero -->
   <main id="inicio" class="container hero" role="main">
@@ -480,6 +510,16 @@ Notas: ${notas || '-'}`;
     tipo.addEventListener('change', ()=>{ state.tipo = tipo.value; render(); });
     orden.addEventListener('change', ()=>{ state.orden = orden.value; render(); });
     btnLimpiar.addEventListener('click', ()=>{ q.value=''; tipo.value=''; orden.value='pop'; state.query=''; state.tipo=''; state.orden='pop'; render(); });
+
+    // VIDEO BG: ajusta el top al alto real del header
+    (function(){
+      const header = document.querySelector('header');
+      const bgfx   = document.querySelector('.bgfx');
+      if(!header || !bgfx) return;
+      function placeBG(){ bgfx.style.top = header.getBoundingClientRect().height + 'px'; }
+      placeBG();
+      addEventListener('resize', placeBG);
+    })();
 
     // Init
     document.getElementById('year').textContent = new Date().getFullYear();
