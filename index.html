@@ -633,24 +633,3 @@ Notas: ${notas || '-'}`;
       padding: 1rem;
     }
   </style>
-</head>
-
-<body>
-
-  <header>
-    <a href="#" class="brand">Hank's & Company</a>
-    <nav>
-      <a href="#">Novedades</a>
-      <a href="#">Catálogo</a>
-      <a href="#">Contacto</a>
-    </nav>
-
-    <!-- BOTÓN DEL CARRITO -->
-    <button id="btn-carrito" type="button"
-      onclick="(function(el){el.classList.add('open');el.setAttribute('aria-hidden','false');document.getElementById('overlay').style.display='block';})(document.getElementById('drawer'));"
-      aria-label="Abrir carrito">
-      🛒 <span id="cart-count" aria-live="polite">0</span>
-    </button>
-  </header>
-</body>
-</html>
