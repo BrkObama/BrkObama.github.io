@@ -45,4 +45,343 @@
     .nav{min-height:64px;display:flex;align-items:center;justify-content:space-between}
     .brand{display:flex;align-items:center;gap:.7rem;font-weight:800;letter-spacing:.2px}
     .brand .logo{width:30px;height:30px;border-radius:9px;background:#000 url('./assets/logo-heart.jpg') center/cover no-repeat;box-shadow:0 0 26px rgba(47,125,50,.35);border:1px solid rgba(47,125,50,.5)}
-    .links{
+    .links{display:flex;gap:1rem}
+    .links a{padding:.45rem .65rem;border-radius:.6rem;color:var(--muted)}
+    .links a:hover{color:var(--text);background:rgba(47,125,50,.15)}
+    .btn{display:inline-flex;align-items:center;gap:.45rem;padding:.65rem 1rem;border-radius:.9rem;border:1px solid var(--stroke);background:linear-gradient(180deg,rgba(20,20,20,.95),rgba(20,20,20,.65));box-shadow:0 8px 24px rgba(0,0,0,.35);cursor:pointer;font-weight:600}
+    .btn:hover{transform:translateY(-1px);border-color:rgba(47,125,50,.55);box-shadow:0 10px 28px rgba(47,125,50,.22)}
+    .btn.brand{border-color:rgba(47,125,50,.6)}
+
+    /* Hero */
+    .hero{display:grid;gap:2rem;grid-template-columns:1.2fr .8fr;align-items:center;padding:4.8rem 0 2.2rem}
+    .eyebrow{font-size:.85rem;color:var(--muted);display:flex;gap:.5rem;flex-wrap:wrap}
+    .chip{border:1px solid var(--stroke);padding:.25rem .6rem;border-radius:.7rem}
+    .hero h1{font-size:clamp(2rem,4.1vw,3.2rem);line-height:1.08;margin:.4rem 0}
+    .hero p{color:var(--muted)}
+    .mock{border:1px solid var(--stroke);border-radius:1rem;background:var(--card);padding:1rem;display:grid;place-items:center}
+    .mock img{border-radius:.7rem}
+
+    /* Filtros */
+    .filters{display:flex;gap:.6rem;flex-wrap:wrap;margin:1.2rem 0;padding:.6rem;border:1px solid var(--stroke);border-radius:.8rem;background:linear-gradient(180deg,rgba(18,18,18,.85),rgba(18,18,18,.55))}
+    .input{display:flex;align-items:center;gap:.4rem;background:#0f0f0f;border:1px solid var(--stroke);border-radius:.6rem;padding:.55rem .7rem}
+    .input input, .input select{background:transparent;border:none;outline:none;color:var(--text)}
+
+    /* Grid productos */
+    .catalog{padding:1rem 0 3rem}
+    .grid{display:grid;gap:1rem;grid-template-columns:repeat(4,1fr)}
+    .card{background:var(--card);border:1px solid var(--stroke);border-radius:1rem;overflow:hidden;display:flex;flex-direction:column}
+    .card .img-wrap{aspect-ratio:4/5;background:linear-gradient(120deg,#0c0c0c,#111);display:grid;place-items:center}
+    .price{display:flex;align-items:center;gap:.4rem}
+    .old{color:var(--muted);text-decoration:line-through;font-size:.95rem}
+    .badge{font-size:.75rem;padding:.18rem .45rem;border:1px solid var(--stroke);border-radius:.5rem;color:#b7fbb7;background:rgba(47,125,50,.18)}
+    .card .body{padding:.9rem}
+    .sizes{display:flex;gap:.35rem;flex-wrap:wrap;margin:.4rem 0 .6rem}
+    .size{border:1px solid var(--stroke);padding:.25rem .5rem;border-radius:.4rem;cursor:pointer}
+    .size.active{border-color:rgba(47,125,50,.7);box-shadow:0 0 0 2px rgba(47,125,50,.18) inset}
+    .buy{margin-top:auto;display:flex;gap:.5rem}
+
+    /* Carrito lateral */
+    .drawer{position:fixed;inset:0 0 0 auto;display:none}
+    .drawer.open{display:block}
+    .overlay{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+    .panel{position:absolute;right:0;top:0;height:100%;width:min(420px,92%);background:linear-gradient(180deg,rgba(12,12,12,.98),rgba(12,12,12,.92));border-left:1px solid var(--stroke);display:grid;grid-template-rows:auto 1fr auto}
+    .panel header,.panel footer{padding:1rem;border-bottom:1px solid var(--stroke)}
+    .panel footer{border-top:1px solid var(--stroke);border-bottom:none}
+    .items{overflow:auto;padding:1rem;display:grid;gap:.8rem}
+    .item{display:grid;grid-template-columns:64px 1fr auto;gap:.7rem;align-items:center;border:1px solid var(--stroke);border-radius:.6rem;padding:.5rem;background:rgba(20,20,20,.65)}
+    .qty{display:flex;align-items:center;gap:.4rem}
+
+    /* Footer */
+    .footer{border-top:1px solid var(--stroke);padding:2rem 0;color:var(--muted);text-align:center}
+
+    /* Slogan sección */
+    .artists{padding:2.2rem 0 3rem}
+    .artists .wrap{display:grid;gap:1rem;grid-template-columns:1fr .9fr;align-items:center;border:1px solid var(--stroke);border-radius:1rem;padding:1rem;background:linear-gradient(180deg,rgba(18,18,18,.9),rgba(18,18,18,.6))}
+    .artists h3{margin:.2rem 0}
+
+    /* Consejo del diseñador */
+    .designer-tip{background:#111;border:1px solid var(--stroke);border-radius:12px;padding:1.2rem;margin:2rem 0 3rem}
+    .designer-tip h3{margin:.2rem 0 0.6rem}
+    .designer-tip strong{color:var(--brand)}
+
+    /* Responsive */
+    @media (max-width: 1000px){.grid{grid-template-columns:repeat(3,1fr)}.hero{grid-template-columns:1fr}.artists .wrap{grid-template-columns:1fr}}
+    @media (max-width: 720px){.grid{grid-template-columns:repeat(2,1fr)}.links{display:none}.hero{padding-top:4.2rem}}
+    @media (max-width: 460px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#inicio" aria-label="Ir al inicio">
+        <span class="logo" aria-hidden="true"></span>
+        <span>Hank&#39;s &amp; Company</span>
+      </a>
+      <nav class="links" aria-label="Secciones">
+        <a href="#novedades">Novedades</a>
+        <a href="#catalogo">Catálogo</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+      <button class="btn brand" id="btn-carrito" aria-label="Abrir carrito">🛒 <span id="cart-count" aria-live="polite">0</span></button>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <main id="inicio" class="container hero" role="main">
+    <section>
+      <div class="eyebrow">
+        <span class="chip">Envío 24–48h</span>
+        <span class="chip">Devolución 30 días</span>
+        <span class="chip">Pago seguro</span>
+      </div>
+      <h1>Only for Hank's Brand</h1>
+      <p>Negro + verde Hank&#39;s. Tejidos duraderos, cortes que sientan bien y precios sin humo. Compra ahora y viste mejor.</p>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem">
+        <a class="btn brand" href="#catalogo">Ver catálogo</a>
+        <a class="btn" href="#novedades">Novedades</a>
+      </div>
+    </section>
+    <aside class="mock" aria-label="Logo Hank&#39;s &amp; Company">
+      <img src="./assets/logo-heart.jpg" alt="Logo Hank&#39;s & Company"/>
+    </aside>
+  </main>
+
+  <!-- Filtros y catálogo -->
+  <section id="catalogo" class="container catalog">
+    <h2 style="margin:.2rem 0 0.4rem">Catálogo</h2>
+    <div class="filters" role="region" aria-label="Filtros de productos">
+      <div class="input"><span>🔎</span><input id="q" placeholder="Buscar prenda (p. ej., sudadera)"/></div>
+      <div class="input">
+        <label for="tipo" class="sr" style="position:absolute;left:-9999px">Tipo</label>
+        <select id="tipo">
+          <option value="">Todos los tipos</option>
+          <option value="camiseta">Camisetas</option>
+          <option value="sudadera">Sudaderas</option>
+          <option value="pantalon">Pantalones</option>
+          <option value="accesorio">Accesorios</option>
+        </select>
+      </div>
+      <div class="input">
+        <label for="orden" class="sr" style="position:absolute;left:-9999px">Ordenar</label>
+        <select id="orden">
+          <option value="pop">Ordenar: Popular</option>
+          <option value="asc">Precio: menor a mayor</option>
+          <option value="desc">Precio: mayor a menor</option>
+        </select>
+      </div>
+      <button class="btn" id="btn-limpiar">Limpiar filtros</button>
+    </div>
+
+    <div id="grid" class="grid" aria-live="polite"></div>
+  </section>
+
+  <!-- Contacto simple -->
+  <section id="contacto" class="container" style="padding:1rem 0 3rem">
+    <div style="display:grid;gap:1rem;grid-template-columns:1.2fr .8fr;align-items:center">
+      <div>
+        <h2>¿Necesitas ayuda con la talla?</h2>
+        <p class="muted" style="color:var(--muted)">Escríbenos y te respondemos en pocas horas. También atendemos por IG.</p>
+        <ul style="color:var(--muted)">
+          <li>Correo: hernangm2006@gmail.com</li>
+          <li>Instagram: hernangm_</li>
+        </ul>
+      </div>
+      <div class="mock">
+        <p style="margin:0;color:var(--muted)">Formulario real próximamente. Esta es una demo funcional 100% estática.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Drawer del carrito -->
+  <div id="drawer" class="drawer" aria-hidden="true">
+    <div class="overlay" id="close-drawer" aria-label="Cerrar carrito" role="button" tabindex="0"></div>
+    <div class="panel" role="dialog" aria-labelledby="carrito-titulo">
+      <header>
+        <h3 id="carrito-titulo" style="margin:.2rem 0">Tu carrito</h3>
+        <p style="margin:0;color:var(--muted)">Revisa tus artículos antes de pagar.</p>
+      </header>
+      <div id="cart-items" class="items"></div>
+      <footer>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem">
+          <strong>Total</strong>
+          <strong id="cart-total">0,00 €</strong>
+        </div>
+        <button class="btn brand" id="btn-checkout">Continuar al pago</button>
+        <p id="checkout-msg" style="margin:.5rem 0 0;color:var(--muted)"></p>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Slogan artistas -->
+  <section class="container artists">
+    <div class="wrap">
+      <div>
+        <h3>Programmed by the best artists</h3>
+        <p style="color:var(--muted)">Gracias al equipo de diseño por convertir ideas en piezas que la gente quiere vestir. Negro impecable, verde Hank&#39;s y actitud.</p>
+      </div>
+      <div class="mock"><img src="./assets/artists-3d.jpg" alt="Arte 3D Hank&#39;s"/></div>
+    </div>
+  </section>
+
+  <!-- Consejo del diseñador (tu texto aplicado) -->
+  <section class="container">
+    <div class="designer-tip">
+      <h3>💡 Consejo de diseño</h3>
+      <p>Mi consejo como diseñador gráfico: no uses el tema <strong>Dawn</strong> ni las fuentes predeterminadas de Shopify.
+      En su lugar, usa <strong>Sense</strong> o <strong>Refresh</strong> y personaliza la combinación de colores.
+      Prueba con <strong>Poppins</strong> o <strong>Montserrat</strong> en regular o seminegrita para el cuerpo del texto y en
+      negrita o extranegrita para los títulos (o fuentes similares). Esto hará que tu tienda se vea más profesional y consolidada,
+      además de mejorar las conversiones.</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>© <span id="year"></span> Hank&#39;s &amp; Company — Hecho con cariño y buen gusto.</p>
+  </footer>
+
+  <script>
+    // ===== Datos de demo con tus fotos =====
+    const PRODUCTS = [
+      {id:'tee-skate', nombre:'AstroHank Black Shirt', tipo:'camiseta', precio:24.90, popular:10, img:'./assets/tee-skate.jpg', tallas:['S','M','L','XL'], etiqueta:'Nuevo'},
+      {id:'tee-grid', nombre:'Hank Blue Hearts Shirt', tipo:'camiseta', precio:22.90, popular:9, img:'./assets/tee-grid.jpg', tallas:['S','M','L','XL']},
+      {id:'tee-front', nombre:'Hank Green Hearts Shirt', tipo:'camiseta', precio:19.90, popular:8, img:'./assets/tee-front.jpg', tallas:['S','M','L','XL']},
+      {id:'hoodie-astro', nombre:'Hoodie AstroHank Black', tipo:'sudadera', precio:39.90, popular:7, img:'./assets/hoodie-astro.jpg', tallas:['S','M','L','XL'], etiqueta:'Best-seller'}
+    ];
+
+    const state = { query:'', tipo:'', orden:'pop', cart:[] };
+    const grid = document.getElementById('grid');
+    const q = document.getElementById('q');
+    const tipo = document.getElementById('tipo');
+    const orden = document.getElementById('orden');
+    const btnLimpiar = document.getElementById('btn-limpiar');
+
+    function money(n){ return n.toFixed(2).replace('.', ',') + ' €'; }
+
+    function render(){
+      let items = PRODUCTS.filter(p =>
+        (!state.tipo || p.tipo===state.tipo) &&
+        (!state.query || p.nombre.toLowerCase().includes(state.query))
+      );
+      if(state.orden==='asc') items.sort((a,b)=>a.precio-b.precio);
+      else if(state.orden==='desc') items.sort((a,b)=>b.precio-a.precio);
+      else items.sort((a,b)=>b.popular-a.popular);
+
+      grid.innerHTML = items.map(renderCard).join('');
+      attachCardListeners();
+    }
+
+    function renderCard(p){
+      const badge = p.etiqueta ? `<span class="badge">${p.etiqueta}</span>` : '';
+      const sizes = p.tallas.map((t,i)=>`<button class="size ${i===0?'active':''}" data-size="${t}">${t}</button>`).join('');
+      return `
+      <article class="card" data-id="${p.id}">
+        <div class="img-wrap">
+          <img src="${p.img}" alt="${p.nombre}" loading="lazy"/>
+        </div>
+        <div class="body">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:.6rem">
+            <h3 style="margin:.1rem 0 0;font-size:1.05rem">${p.nombre}</h3>
+            ${badge}
+          </div>
+          <div class="price"><strong>${money(p.precio)}</strong></div>
+          <div class="sizes" role="group" aria-label="Selecciona talla">${sizes}</div>
+          <div class="buy">
+            <button class="btn brand add">Añadir 🛒</button>
+            <button class="btn" title="Guardar para luego">♡</button>
+          </div>
+        </div>
+      </article>`;
+    }
+
+    function attachCardListeners(){
+      document.querySelectorAll('.card .sizes').forEach(group=>{
+        group.addEventListener('click', e=>{
+          if(e.target.classList.contains('size')){
+            group.querySelectorAll('.size').forEach(s=>s.classList.remove('active'));
+            e.target.classList.add('active');
+          }
+        });
+      });
+      document.querySelectorAll('.card .add').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          const card = btn.closest('.card');
+          const id = card.dataset.id;
+          const prod = PRODUCTS.find(p=>p.id===id);
+          const sel = card.querySelector('.size.active')?.dataset.size || prod.tallas[0];
+          addToCart({...prod, talla: sel});
+        });
+      });
+    }
+
+    // ===== Carrito =====
+    const drawer = document.getElementById('drawer');
+    const btnCart = document.getElementById('btn-carrito');
+    const cartItems = document.getElementById('cart-items');
+    const cartTotal = document.getElementById('cart-total');
+    const cartCount = document.getElementById('cart-count');
+
+    function openDrawer(){ drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); }
+    function closeDrawer(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); }
+
+    btnCart.addEventListener('click',()=> openDrawer());
+    document.getElementById('close-drawer').addEventListener('click',()=> closeDrawer());
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeDrawer(); });
+
+    function addToCart(item){
+      const key = item.id + '|' + item.talla;
+      const found = state.cart.find(i=>i.key===key);
+      if(found) found.qty += 1; else state.cart.push({key, id:item.id, nombre:item.nombre, talla:item.talla, precio:item.precio, img:item.img, qty:1});
+      renderCart();
+      openDrawer();
+    }
+
+    function removeFromCart(key){
+      state.cart = state.cart.filter(i=>i.key!==key);
+      renderCart();
+    }
+
+    function changeQty(key, delta){
+      const it = state.cart.find(i=>i.key===key);
+      if(!it) return;
+      it.qty += delta; if(it.qty<=0) removeFromCart(key); else renderCart();
+    }
+
+    function renderCart(){
+      cartItems.innerHTML = state.cart.length ? state.cart.map(i=>`
+        <div class="item">
+          <img src="${i.img}" alt="${i.nombre}" width="64" height="64"/>
+          <div>
+            <div style="display:flex;justify-content:space-between;gap:.6rem">
+              <strong>${i.nombre}</strong>
+              <button class="btn" onclick="removeFromCart('${i.key}')" title="Quitar">✕</button>
+            </div>
+            <div style="color:var(--muted)">Talla ${i.talla}</div>
+            <div class="qty"><button class="btn" onclick="changeQty('${i.key}',-1)">−</button><span>${i.qty}</span><button class="btn" onclick="changeQty('${i.key}',1)">＋</button></div>
+          </div>
+          <div><strong>${money(i.precio*i.qty)}</strong></div>
+        </div>`).join('') : '<p style="color:var(--muted)">Tu carrito está vacío.</p>';
+      const total = state.cart.reduce((s,i)=>s+i.precio*i.qty,0);
+      cartTotal.textContent = money(total);
+      cartCount.textContent = state.cart.reduce((s,i)=>s+i.qty,0);
+    }
+
+    // ===== Filtros listeners =====
+    q.addEventListener('input', ()=>{ state.query = q.value.trim().toLowerCase(); render(); });
+    tipo.addEventListener('change', ()=>{ state.tipo = tipo.value; render(); });
+    orden.addEventListener('change', ()=>{ state.orden = orden.value; render(); });
+    btnLimpiar.addEventListener('click', ()=>{ q.value=''; tipo.value=''; orden.value='pop'; state.query=''; state.tipo=''; state.orden='pop'; render(); });
+
+    // ===== Checkout (demo) =====
+    document.getElementById('btn-checkout').addEventListener('click',()=>{
+      const msg = document.getElementById('checkout-msg');
+      if(!state.cart.length){ msg.textContent = 'Añade algo al carrito antes de pagar 😉'; return; }
+      msg.textContent = 'Demo estática. Aquí conectaríamos Stripe / PayPal o un backend.';
+    });
+
+    // Init
+    document.getElementById('year').textContent = new Date().getFullYear();
+    render();
+  </script>
+</body>
+</html>
